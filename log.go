@@ -47,7 +47,8 @@ type Logger struct {
 }
 
 // Log is one glocal logger which can be used in any packages
-var Log = NewLogger(os.Stdout, INFO)
+// var Log = NewLogger(os.Stdout, INFO)
+var logger = NewLogger(os.Stdout, INFO)
 
 func getShortFileName(file string) string {
 	index := strings.LastIndex(file, "/")
@@ -98,127 +99,127 @@ func (l *Logger) SetLevelByName(level string) {
 		{
 			l.SetLevel(TRACE)
 		}
+	case "FATAL":
+		{
+			l.SetLevel(FATAL)
+		}
 	default:
 		l.SetLevel(WARN)
 	}
 }
 
-// Log is logging
-func (l *Logger) Log(level int, v ...interface{}) {
+func (l *Logger) doPrint(level int, format string, v ...interface{}) {
 	timestamp := time.Now().Format(TimeFormat)
 	loglevel := LogLevelMap[level]
 
 	l.mu.Lock()
 	defer l.mu.Unlock()
 
-	context := fmt.Sprint(v...)
+	var context string
+	if strings.EqualFold("", format) {
+		context = fmt.Sprint(v...)
+	} else {
+		context = fmt.Sprintf(format, v...)
+	}
+
 	pc, file, line, _ := runtime.Caller(CallPath)
 	funcname := runtime.FuncForPC(pc).Name()
 	file = getShortFileName(file)
+
 	log := fmt.Sprintf("%s [%s] %s [%s] [%s:%d]", timestamp, loglevel, context, funcname, file, line)
 	fmt.Fprintln(l.Writer, log)
 }
 
-// Logf is logging format
-func (l *Logger) Logf(level int, format string, v ...interface{}) {
-	timestamp := time.Now().Format(TimeFormat)
-	loglevel := LogLevelMap[level]
+func (l *Logger) println(level int, v ...interface{}) {
+	l.doPrint(level, "", v...)
+}
 
-	l.mu.Lock()
-	defer l.mu.Unlock()
-
-	context := fmt.Sprintf(format, v...)
-	pc, file, line, _ := runtime.Caller(CallPath)
-	funcname := runtime.FuncForPC(pc).Name()
-	file = getShortFileName(file)
-
-	log := fmt.Sprintf("%s [%s] %s [%s] [%s:%d]", timestamp, loglevel, context, funcname, file, line)
-	fmt.Fprintln(l.Writer, log)
+func (l *Logger) printf(level int, format string, v ...interface{}) {
+	l.doPrint(level, format, v...)
 }
 
 // Traceln print trace level logs in a line
-func (l *Logger) Traceln(v ...interface{}) {
-	if TRACE >= l.Level {
-		l.Log(TRACE, v...)
+func Traceln(v ...interface{}) {
+	if TRACE >= logger.Level {
+		logger.println(TRACE, v...)
 	}
 }
 
 // Tracef print trace level logs in a specific format
-func (l *Logger) Tracef(format string, v ...interface{}) {
-	if TRACE >= l.Level {
-		l.Logf(TRACE, format, v...)
+func Tracef(format string, v ...interface{}) {
+	if TRACE >= logger.Level {
+		logger.printf(TRACE, format, v...)
 	}
 }
 
 // Debugln print debug level logs in a line
-func (l *Logger) Debugln(v ...interface{}) {
-	if DEBUG >= l.Level {
-		l.Log(DEBUG, v...)
+func Debugln(v ...interface{}) {
+	if DEBUG >= logger.Level {
+		logger.println(DEBUG, v...)
 	}
 }
 
 // Debugf print debug level logs in a specific format
-func (l *Logger) Debugf(format string, v ...interface{}) {
-	if DEBUG >= l.Level {
-		l.Logf(DEBUG, format, v...)
+func Debugf(format string, v ...interface{}) {
+	if DEBUG >= logger.Level {
+		logger.printf(DEBUG, format, v...)
 	}
 }
 
 // Infoln print info level logs in a line
-func (l *Logger) Infoln(v ...interface{}) {
-	if INFO >= l.Level {
-		l.Log(INFO, v...)
+func Infoln(v ...interface{}) {
+	if INFO >= logger.Level {
+		logger.println(INFO, v...)
 	}
 }
 
 // Infof print info level logs in a specific format
-func (l *Logger) Infof(format string, v ...interface{}) {
-	if INFO >= l.Level {
-		l.Logf(INFO, format, v...)
+func Infof(format string, v ...interface{}) {
+	if INFO >= logger.Level {
+		logger.printf(INFO, format, v...)
 	}
 }
 
 // Warnln print warn level logs in a line
-func (l *Logger) Warnln(v ...interface{}) {
-	if WARN >= l.Level {
-		l.Log(WARN, v...)
+func Warnln(v ...interface{}) {
+	if WARN >= logger.Level {
+		logger.println(WARN, v...)
 	}
 }
 
 // Warnf print warn level logs in a specific format
-func (l *Logger) Warnf(format string, v ...interface{}) {
-	if WARN >= l.Level {
-		l.Logf(WARN, format, v...)
+func Warnf(format string, v ...interface{}) {
+	if WARN >= logger.Level {
+		logger.printf(WARN, format, v...)
 	}
 }
 
 // Errorln print error level logs in a line
-func (l *Logger) Errorln(v ...interface{}) {
-	if ERROR >= l.Level {
-		l.Log(ERROR, v...)
+func Errorln(v ...interface{}) {
+	if ERROR >= logger.Level {
+		logger.println(ERROR, v...)
 	}
 }
 
 // Errorf print error level logs in a specific format
-func (l *Logger) Errorf(format string, v ...interface{}) {
-	if ERROR >= l.Level {
-
-		l.Logf(ERROR, format, v...)
+func Errorf(format string, v ...interface{}) {
+	if ERROR >= logger.Level {
+		logger.printf(ERROR, format, v...)
 	}
 }
 
 // Fatalln print fatal level logs in a line
-func (l *Logger) Fatalln(v ...interface{}) {
-	if FATAL >= l.Level {
-		l.Log(FATAL, v...)
+func Fatalln(v ...interface{}) {
+	if FATAL >= logger.Level {
+		logger.println(FATAL, v...)
 		os.Exit(1)
 	}
 }
 
 // Fatalf print fatal level logs in a specific format
-func (l *Logger) Fatalf(format string, v ...interface{}) {
-	if FATAL >= l.Level {
-		l.Logf(FATAL, format, v...)
+func Fatalf(format string, v ...interface{}) {
+	if FATAL >= logger.Level {
+		logger.printf(FATAL, format, v...)
 		os.Exit(1)
 	}
 }
