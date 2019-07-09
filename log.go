@@ -68,6 +68,10 @@ type LoggerIface interface {
 	Log(level int, v ...interface{})
 	Logf(level int, formater string, v ...interface{})
 }
+// SetLevel
+func SetLevel(lv string) {
+	l.SetLevelByName(lv)
+}
 
 // SetLevel set the level of log
 func (l *Logger) SetLevel(level int) {
