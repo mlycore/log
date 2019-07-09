@@ -70,7 +70,7 @@ type LoggerIface interface {
 }
 // SetLevel
 func SetLevel(lv string) {
-	l.SetLevelByName(lv)
+	logger.SetLevelByName(lv)
 }
 
 // SetLevel set the level of log
