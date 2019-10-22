@@ -127,6 +127,7 @@ func (l *Logger) SetLevelByName(level string) {
 }
 
 func (l *Logger) doPrint(level int, format string, v ...interface{}) {
+	time.LoadLocation("Local")
 	timestamp := time.Now().Format(TimeFormat)
 	loglevel := LogLevelMap[level]
 

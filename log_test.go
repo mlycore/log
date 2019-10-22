@@ -2,6 +2,7 @@ package log
 
 import (
 	"fmt"
+	"os"
 	"runtime"
 	"testing"
 )
@@ -47,4 +48,12 @@ func Test_FuncInfo(t *testing.T) {
 	data := make([]byte, 10240)
 	runtime.Stack(data,true)
 	fmt.Printf("%s\n", string(data))
+}
+
+func Test_GetShortFileName(t *testing.T) {
+	name := "github.com/xuyun-io/kubestar/pkg/controllers/crd/application.(*ApplicationController).List"
+	NewLogger(os.Stdout, 0, 3)
+	SetLevel("INFO")
+	Infof("%s", getShortFileName(name))
+	// t.Logf("%s\n", getShortFileName(name))
 }
