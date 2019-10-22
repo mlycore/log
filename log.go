@@ -34,7 +34,7 @@ var LogLevelMap = map[int]string{
 
 const (
 	// CallPath is The depth of a function is called
-	CallPath = 2
+	CallPath = 1
 	// TimeFormat is The default format of time
 	TimeFormat = "2006-01-02 15:04:05.0000"
 )
@@ -43,12 +43,13 @@ const (
 type Logger struct {
 	Writer io.Writer
 	Level  int
+	CallPath int
 	mu     sync.Mutex
 }
 
 // Log is one glocal logger which can be used in any packages
 // var Log = NewLogger(os.Stdout, INFO)
-var logger = NewLogger(os.Stdout, INFO)
+var logger = NewLogger(os.Stdout, INFO, CallPath)
 
 func getShortFileName(file string) string {
 	index := strings.LastIndex(file, "/")
@@ -56,10 +57,11 @@ func getShortFileName(file string) string {
 }
 
 // NewLogger returns a instance of Logger
-func NewLogger(writer io.Writer, level int) *Logger {
+func NewLogger(writer io.Writer, level, caller int) *Logger {
 	return &Logger{
 		Writer: writer,
 		Level:  level,
+		CallPath: caller,
 	}
 }
 
@@ -68,9 +70,15 @@ type LoggerIface interface {
 	Log(level int, v ...interface{})
 	Logf(level int, formater string, v ...interface{})
 }
+
 // SetLevel
 func SetLevel(lv string) {
 	logger.SetLevelByName(lv)
+}
+
+//Set CallPath
+func SetCallPath(caller int) {
+	logger.CallPath = caller
 }
 
 // SetLevel set the level of log
@@ -126,7 +134,7 @@ func (l *Logger) doPrint(level int, format string, v ...interface{}) {
 		context = fmt.Sprintf(format, v...)
 	}
 
-	pc, file, line, _ := runtime.Caller(CallPath)
+	pc, file, line, _ := runtime.Caller(l.CallPath)
 	funcname := runtime.FuncForPC(pc).Name()
 	file = getShortFileName(file)
 
@@ -147,6 +155,10 @@ func Traceln(v ...interface{}) {
 	if TRACE >= logger.Level {
 		logger.println(TRACE, v...)
 	}
+	pc, file, line, ok := runtime.Caller(CallPath)
+	fmt.Printf("runtime.Caller: %d, %s, %d, %v\n", pc, file, line, ok)
+	funcname := runtime.FuncForPC(pc).Name()
+	fmt.Printf("runtime.FuncForPc.Name: %s\n", funcname)
 }
 
 // Tracef print trace level logs in a specific format

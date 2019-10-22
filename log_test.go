@@ -2,6 +2,7 @@ package log
 
 import (
 	"fmt"
+	"runtime"
 	"testing"
 )
 
@@ -39,4 +40,11 @@ func printall(level string) {
 	Errorf("errorf: %s", str)
 	//Fatalln("fatalln: " + str)
 	//Fatalf("fatalf: %s", str)
+}
+
+func Test_FuncInfo(t *testing.T) {
+	Traceln("this is traceln")
+	data := make([]byte, 10240)
+	runtime.Stack(data,true)
+	fmt.Printf("%s\n", string(data))
 }
