@@ -49,20 +49,26 @@ type Logger struct {
 
 // Log is one glocal logger which can be used in any packages
 // var Log = NewLogger(os.Stdout, INFO)
-var logger = NewLogger(os.Stdout, INFO, CallPath)
+// var logger = NewLogger(os.Stdout, INFO, CallPath)
 
 func getShortFileName(file string) string {
 	index := strings.LastIndex(file, "/")
 	return file[index+1:]
 }
 
+var once sync.Once
+var logger *Logger
+
 // NewLogger returns a instance of Logger
 func NewLogger(writer io.Writer, level, caller int) *Logger {
-	return &Logger{
-		Writer: writer,
-		Level:  level,
-		CallPath: caller,
-	}
+	once.Do(func() {
+		logger = &Logger{
+			Writer: writer,
+			Level:  level,
+			CallPath: caller,
+		}
+	})
+	return logger
 }
 
 // LoggerIface defines a general behavior of this logger
