@@ -44,6 +44,7 @@ type Logger struct {
 	Writer io.Writer
 	Level  int
 	CallPath int
+	Color bool
 	mu     sync.Mutex
 }
 
@@ -60,12 +61,13 @@ var once sync.Once
 var logger *Logger
 
 // NewLogger returns a instance of Logger
-func NewLogger(writer io.Writer, level, caller int) *Logger {
+func NewLogger(writer io.Writer, level, caller int, color bool) *Logger {
 	once.Do(func() {
 		logger = &Logger{
 			Writer: writer,
 			Level:  level,
 			CallPath: caller,
+			Color: color,
 		}
 	})
 	return logger
@@ -145,7 +147,14 @@ func (l *Logger) doPrint(level int, format string, v ...interface{}) {
 	funcname := runtime.FuncForPC(pc).Name()
 	file = getShortFileName(file)
 
-	log := fmt.Sprintf("%s [%s] %s [%s] [%s:%d]", timestamp, loglevel, context, funcname, file, line)
+	var log string
+	if l.Color && level == ERROR {
+		// log = fmt.Sprintf("%s \033[31m[%s]\033[0m %s [%s] [%s:%d]", timestamp, loglevel, context, funcname, file, line)
+		log = fmt.Sprintf("\033[31m%s [%s] %s [%s] [%s:%d]\033[0m", timestamp, loglevel, context, funcname, file, line)
+	} else {
+		log = fmt.Sprintf("%s [%s] %s [%s] [%s:%d]", timestamp, loglevel, context, funcname, file, line)
+	}
+
 	fmt.Fprintln(l.Writer, log)
 }
 

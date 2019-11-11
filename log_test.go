@@ -52,8 +52,8 @@ func Test_FuncInfo(t *testing.T) {
 
 func Test_GetShortFileName(t *testing.T) {
 	name := "github.com/xuyun-io/kubestar/pkg/controllers/crd/application.(*ApplicationController).List"
-	NewLogger(os.Stdout, 0, 3)
-	SetLevel("INFO")
-	Infof("%s", getShortFileName(name))
+	NewLogger(os.Stdout, 0, 3, true)
+	SetLevel("ERROR")
+	Errorf("%s", getShortFileName(name))
 	// t.Logf("%s\n", getShortFileName(name))
 }
