@@ -41,11 +41,11 @@ const (
 
 // Logger defines a general logger which could write specific logs
 type Logger struct {
-	Writer io.Writer
-	Level  int
+	Writer   io.Writer
+	Level    int
 	CallPath int
-	Color bool
-	mu     sync.Mutex
+	Color    bool
+	mu       sync.Mutex
 }
 
 // Log is one glocal logger which can be used in any packages
@@ -58,16 +58,21 @@ func getShortFileName(file string) string {
 }
 
 var once sync.Once
-var logger *Logger
+var logger = &Logger{
+	Writer:   os.Stdout,
+	Level:    INFO,
+	CallPath: 3,
+	Color:    true,
+}
 
 // NewLogger returns a instance of Logger
 func NewLogger(writer io.Writer, level, caller int, color bool) *Logger {
 	once.Do(func() {
 		logger = &Logger{
-			Writer: writer,
-			Level:  level,
+			Writer:   writer,
+			Level:    level,
 			CallPath: caller,
-			Color: color,
+			Color:    color,
 		}
 	})
 	return logger
@@ -79,12 +84,12 @@ type LoggerIface interface {
 	Logf(level int, formater string, v ...interface{})
 }
 
-// SetLevel
+// SetLevel set log level by name
 func SetLevel(lv string) {
 	logger.SetLevelByName(lv)
 }
 
-//Set CallPath
+// SetCallPath set caller path
 func SetCallPath(caller int) {
 	logger.CallPath = caller
 }
