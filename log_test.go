@@ -46,7 +46,7 @@ func printall(level string) {
 func Test_FuncInfo(t *testing.T) {
 	Traceln("this is traceln")
 	data := make([]byte, 10240)
-	runtime.Stack(data,true)
+	runtime.Stack(data, true)
 	fmt.Printf("%s\n", string(data))
 }
 
@@ -56,4 +56,24 @@ func Test_GetShortFileName(t *testing.T) {
 	SetLevel("ERROR")
 	Errorf("%s", getShortFileName(name))
 	// t.Logf("%s\n", getShortFileName(name))
+}
+
+func Test_FormatterLogger(t *testing.T) {
+	NewDefaultLogger()
+	SetFormatter(&JSONFormatter{})
+	// SetFormatter(&TextFormatter{})
+
+	SetContext(Context{
+		"namespace": "default",
+		"deployment": "kubestar",
+	})
+
+	Infoln("deployment create success")
+	Errorf("service create error")
+
+	SetContext(Context{
+		"namespace": "starpay",
+		"deployment": "uuid",
+	})
+	Infoln("deployment list success")
 }
