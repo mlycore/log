@@ -62,11 +62,12 @@ func Test_FormatterLogger(t *testing.T) {
 	NewDefaultLogger()
 	SetFormatter(&JSONFormatter{})
 	// SetFormatter(&TextFormatter{})
-
+/*
 	SetContext(Context{
 		"namespace": "default",
 		"deployment": "kubestar",
 	})
+ */
 
 	Infoln("deployment create success")
 	Errorf("service create error")

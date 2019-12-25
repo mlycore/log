@@ -26,11 +26,25 @@ type Logger struct {
 	Writer    io.Writer
 	mu        sync.Mutex
 	formatter Formatter
+	entries   sync.Pool
 
 	Level    int
 	CallPath int
 	Color    bool
-	Context  Context
+	// Context  Context
+}
+
+func (l *Logger)newEntry() *Entry {
+	entry, ok := l.entries.Get().(*Entry)
+	if ok {
+		return entry
+	}
+
+	return NewEntry()
+}
+
+func (l *Logger)releaseEntry(e *Entry) {
+	l.entries.Put(e)
 }
 
 var once sync.Once
@@ -71,18 +85,20 @@ func SetFormatter(f Formatter) {
 	f.SetColor(logger.Color)
 }
 
-func SetContext(ctx Context) *Logger {
-	return logger.SetContext(ctx)
-}
-
 func (l *Logger) SetFormatter(f Formatter) *Logger {
 	l.formatter = f
 	return l
 }
 
-func (l *Logger) SetContext(ctx Context) *Logger {
-	l.Context = ctx
-	return l
+func SetContext(ctx Context) *Entry {
+	return logger.SetContext(ctx)
+}
+
+func (l *Logger) SetContext(ctx Context) *Entry {
+	// l.Context = ctx
+	entry := l.newEntry()
+	defer l.releaseEntry(entry)
+	return entry.WithContext(ctx)
 }
 
 // LoggerIface defines a general behavior of this logger

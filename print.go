@@ -8,126 +8,6 @@ import (
 	"time"
 )
 
-const (
-	// Local is the default time zone
-	LocationLocal = "Local"
-
-	// TimeFormatDefault is The default format of time
-	TimeFormatDefault = "2006-01-02 15:04:05.0000"
-)
-
-/*
-func doPrint(fields Fields) {
-	time.LoadLocation(LocationLocal)
-	timestamp := time.Now().Format(TimeFormatDefault)
-	// loglevel := LogLevelMap[fields.Level]
-
-	l.mu.Lock()
-	defer l.mu.Unlock()
-
-	var context string
-	if strings.EqualFold("", format) {
-		context = fmt.Sprint(v...)
-	} else {
-		context = fmt.Sprintf(format, v...)
-	}
-
-	pc, file, line, _ := runtime.Caller(l.CallPath)
-	funcname := runtime.FuncForPC(pc).Name()
-	file = getShortFileName(file)
-
-	var log string
-	if l.Color && level == ERROR {
-		// log = fmt.Sprintf("%s \033[31m[%s]\033[0m %s [%s] [%s:%d]", timestamp, loglevel, context, funcname, file, line)
-		log = fmt.Sprintf("\033[31m%s [%s] %s [%s] [%s:%d]\033[0m", timestamp, loglevel, context, funcname, file, line)
-	} else {
-		log = fmt.Sprintf("%s [%s] %s [%s] [%s:%d]", timestamp, loglevel, context, funcname, file, line)
-	}
-
-	fmt.Fprintln(l.Writer, log)
-}
-*/
-
-/*
-func (l *Logger) doPrint(level int, format string, v ...interface{}) {
-	time.LoadLocation(LocationLocal)
-	timestamp := time.Now().Format(TimeFormatDefault)
-	loglevel := LogLevelMap[level]
-
-	l.mu.Lock()
-	defer l.mu.Unlock()
-
-	var context string
-	if strings.EqualFold("", format) {
-		context = fmt.Sprint(v...)
-	} else {
-		context = fmt.Sprintf(format, v...)
-	}
-
-	pc, file, line, _ := runtime.Caller(l.CallPath)
-	funcname := runtime.FuncForPC(pc).Name()
-	file = getShortFileName(file)
-
-	var log string
-	if l.Color && level == LogLevelError {
-		// log = fmt.Sprintf("%s \033[31m[%s]\033[0m %s [%s] [%s:%d]", timestamp, loglevel, context, funcname, file, line)
-		log = fmt.Sprintf("\033[31m%s [%s] %s [%s] [%s:%d]\033[0m", timestamp, loglevel, context, funcname, file, line)
-	} else {
-		log = fmt.Sprintf("%s [%s] %s [%s] [%s:%d]", timestamp, loglevel, context, funcname, file, line)
-	}
-
-	fmt.Fprintln(l.Writer, log)
-}
-*/
-
-func (l *Logger) doPrint(level int, format string, v ...interface{}) {
-	fields := Fields{
-		Timestamp: "",
-		Level:     "",
-		Msg:       "",
-		Func:      "",
-		File:      "",
-		Line:      0,
-	}
-
-	time.LoadLocation(LocationLocal)
-	timestamp := time.Now().Format(TimeFormatDefault)
-	fields.Timestamp = timestamp
-
-	loglevel := LogLevelMap[level]
-	fields.Level = loglevel
-
-	l.mu.Lock()
-	defer l.mu.Unlock()
-
-	pc, file, line, _ := runtime.Caller(l.CallPath)
-	funcname := runtime.FuncForPC(pc).Name()
-	fields.Func = funcname
-	fields.Line = line
-
-	file = getShortFileName(file)
-	fields.File = file
-
-	var formatString string
-	if strings.EqualFold("", format) {
-		formatString = fmt.Sprint(v...)
-	} else {
-		formatString = fmt.Sprintf(format, v...)
-	}
-	fields.Msg = formatString
-
-	msg := l.formatter.Print(fields, l.Context)
-	fmt.Fprintln(l.Writer, msg)
-}
-
-func (l *Logger) println(level int, v ...interface{}) {
-	l.doPrint(level, "", v...)
-}
-
-func (l *Logger) printf(level int, format string, v ...interface{}) {
-	l.doPrint(level, format, v...)
-}
-
 // Traceln print trace level logs in a line
 func Traceln(v ...interface{}) {
 	if LogLevelTrace >= logger.Level {
@@ -212,4 +92,101 @@ func Fatalf(format string, v ...interface{}) {
 		logger.printf(LogLevelFatal, format, v...)
 		os.Exit(1)
 	}
+}
+
+
+const (
+	// Local is the default time zone
+	LocationLocal = "Local"
+
+	// TimeFormatDefault is The default format of time
+	TimeFormatDefault = "2006-01-02 15:04:05.0000"
+)
+
+func (l *Logger) doPrint(level int, format string, v ...interface{}) {
+	fields := Fields{
+		Timestamp: "",
+		Level:     "",
+		Msg:       "",
+		Func:      "",
+		File:      "",
+		Line:      0,
+	}
+
+	time.LoadLocation(LocationLocal)
+	timestamp := time.Now().Format(TimeFormatDefault)
+	fields.Timestamp = timestamp
+
+	loglevel := LogLevelMap[level]
+	fields.Level = loglevel
+
+	l.mu.Lock()
+	defer l.mu.Unlock()
+
+	pc, file, line, _ := runtime.Caller(l.CallPath)
+	funcname := runtime.FuncForPC(pc).Name()
+	fields.Func = funcname
+	fields.Line = line
+
+	file = getShortFileName(file)
+	fields.File = file
+
+	var formatString string
+	if strings.EqualFold("", format) {
+		formatString = fmt.Sprint(v...)
+	} else {
+		formatString = fmt.Sprintf(format, v...)
+	}
+	fields.Msg = formatString
+
+	msg := l.formatter.Print(fields, Context{})
+	fmt.Fprintln(l.Writer, msg)
+}
+
+func (l *Logger)doPrintWithContext(level int, ctx Context, format string, v ...interface{}) {
+	fields := Fields{
+		Timestamp: "",
+		Level:     "",
+		Msg:       "",
+		Func:      "",
+		File:      "",
+		Line:      0,
+	}
+
+	time.LoadLocation(LocationLocal)
+	timestamp := time.Now().Format(TimeFormatDefault)
+	fields.Timestamp = timestamp
+
+	loglevel := LogLevelMap[level]
+	fields.Level = loglevel
+
+	l.mu.Lock()
+	defer l.mu.Unlock()
+
+	pc, file, line, _ := runtime.Caller(l.CallPath)
+	funcname := runtime.FuncForPC(pc).Name()
+	fields.Func = funcname
+	fields.Line = line
+
+	file = getShortFileName(file)
+	fields.File = file
+
+	var formatString string
+	if strings.EqualFold("", format) {
+		formatString = fmt.Sprint(v...)
+	} else {
+		formatString = fmt.Sprintf(format, v...)
+	}
+	fields.Msg = formatString
+
+	msg := l.formatter.Print(fields, ctx)
+	fmt.Fprintln(l.Writer, msg)
+}
+
+func (l *Logger) println(level int, v ...interface{}) {
+	l.doPrint(level, "", v...)
+}
+
+func (l *Logger) printf(level int, format string, v ...interface{}) {
+	l.doPrint(level, format, v...)
 }
