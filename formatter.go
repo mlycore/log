@@ -38,7 +38,7 @@ func (t *JSONFormatter) Print(fields Fields, ctx Context) string {
 	if t.Color && fields.Level == EnvLogLevelError {
 		msg = fmt.Sprintf("\033[31m %s \033[0m", string(data))
 	} else if t.Color && fields.Level == EnvLogLevelDebug { 
-		msg = fmt.Sprintf(""\033[1;34m %s \033[0m", string(data))
+		msg = fmt.Sprintf("\033[1;34m %s \033[0m", string(data))
         } else {
 		msg = fmt.Sprintf("%s", string(data))
 	}
