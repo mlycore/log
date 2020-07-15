@@ -8,6 +8,8 @@ import (
 )
 
 func Test_Log(t *testing.T) {
+        NewDefaultLogger()
+	SetFormatter(&TextFormatter{})
 	logger.SetLevelByName("TRACE")
 	printall("TRACE")
 

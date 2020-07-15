@@ -35,13 +35,7 @@ func (t *JSONFormatter) Print(fields Fields, ctx Context) string {
 	}
 
 	var msg string
-	if t.Color && fields.Level == EnvLogLevelError {
-		msg = fmt.Sprintf("\033[31m %s \033[0m", string(data))
-	} else if t.Color && fields.Level == EnvLogLevelDebug { 
-		msg = fmt.Sprintf("\033[1;34m %s \033[0m", string(data))
-        } else {
-		msg = fmt.Sprintf("%s", string(data))
-	}
+	msg = fmt.Sprintf("%s", string(data))
 
 	return msg
 }
@@ -66,8 +60,12 @@ func (t *TextFormatter) Print(fields Fields, ctx Context) string {
 	}
 
 	var msg string
-	if t.Color && fields.Level == EnvLogLevelError {
-		msg = fmt.Sprintf("\033[31m%s [%s] %s [%s] [%s:%d]\033[0m", fields.Timestamp, fields.Level, context, fields.Func, fields.File, fields.Line)
+	if t.Color {
+		switch fields.Level {
+			case EnvLogLevelError: msg = fmt.Sprintf("\033[31m%s [%s] %s [%s] [%s:%d]\033[0m", fields.Timestamp, fields.Level, context, fields.Func, fields.File, fields.Line)
+			case EnvLogLevelDebug: msg = fmt.Sprintf("\033[1;34m%s [%s] %s [%s] [%s:%d]\033[0m", fields.Timestamp, fields.Level, context, fields.Func, fields.File, fields.Line)
+			default: msg = fmt.Sprintf("%s [%s] %s [%s] [%s:%d]", fields.Timestamp, fields.Level, context, fields.Func, fields.File, fields.Line)
+		}
 	} else {
 		msg = fmt.Sprintf("%s [%s] %s [%s] [%s:%d]", fields.Timestamp, fields.Level, context, fields.Func, fields.File, fields.Line)
 	}
