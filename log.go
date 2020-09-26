@@ -34,6 +34,12 @@ type Logger struct {
 	// Context  Context
 }
 
+func init() {
+	NewDefaultLogger()
+	SetFormatter(&TextFormatter{})
+	SetLevel(EnvLogLevelInfo)
+}
+
 func (l *Logger)newEntry() *Entry {
 	entry, ok := l.entries.Get().(*Entry)
 	if ok {
