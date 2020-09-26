@@ -1,25 +1,13 @@
 package log
 
 import (
+	"fmt"
 	"io"
 	"os"
+	"strings"
 	"sync"
 )
 
-const (
-	// CallPath is The depth of a function is called
-	CallPathDepth1  = 1
-	CallPathDepth2  = 2
-	CallPathDepth3  = 3
-	CallPathDefault = CallPathDepth3
-
-	// Color refers to if
-	ColorOn  = true
-	ColorOff = false
-
-	// Default LogLevel
-	LogLevelDefault = LogLevelInfo
-)
 
 // Logger defines a general logger which could write specific logs
 type Logger struct {
@@ -187,4 +175,60 @@ func SetCallPath(caller int) {
 //SetCallPath set caller path
 func (l *Logger) SetCallPath(callPath int) {
 	l.CallPath = callPath
+}
+
+func (l *Logger) doPrint(level int, ctx Context, format string, v ...interface{}) {
+	fields := Fields{
+		Timestamp: "",
+		Level:     "",
+		Msg:       "",
+		Func:      "",
+		File:      "",
+		Line:      0,
+	}
+
+	time.LoadLocation(LocationLocal)
+	timestamp := time.Now().Format(TimeFormatDefault)
+	fields.Timestamp = timestamp
+
+	loglevel := LogLevelMap[level]
+	fields.Level = loglevel
+
+	l.mu.Lock()
+	defer l.mu.Unlock()
+
+	pc, file, line, _ := runtime.Caller(l.CallPath)
+	funcname := runtime.FuncForPC(pc).Name()
+	fields.Func = funcname
+	fields.Line = line
+
+	file = getShortFileName(file)
+	fields.File = file
+
+	var formatString string
+	if strings.EqualFold("", format) {
+		formatString = fmt.Sprint(v...)
+	} else {
+		formatString = fmt.Sprintf(format, v...)
+	}
+	fields.Msg = formatString
+
+	msg := l.formatter.Print(fields, ctx)
+	fmt.Fprintln(l.Writer, msg)
+}
+
+func (l *Logger) println(level int, ctx Context, v ...interface{}) {
+	if l.Async {
+		go l.doPrint(level, ctx, "", v...)
+	} else {
+		l.doPrint(level, ctx, "", v...)
+	}
+}
+
+func (l *Logger) printf(level int, ctx Context, format string, v ...interface{}) {
+	if l.Async {
+		go l.doPrint(level, ctx, "", v...)
+	} else {
+		l.doPrint(level, ctx, format, v...)
+	}
 }
