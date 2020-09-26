@@ -144,9 +144,17 @@ func (l *Logger) doPrint(level int, ctx Context, format string, v ...interface{}
 }
 
 func (l *Logger) println(level int, ctx Context, v ...interface{}) {
-	l.doPrint(level, ctx, "", v...)
+	if l.Async {
+		go l.doPrint(level, ctx, "", v...)
+	} else {
+		l.doPrint(level, ctx, "", v...)
+	}
 }
 
 func (l *Logger) printf(level int, ctx Context, format string, v ...interface{}) {
-	l.doPrint(level, ctx, format, v...)
+	if l.Async {
+		go l.doPrint(level, ctx, "", v...)
+	} else {
+		l.doPrint(level, ctx, format, v...)
+	}
 }

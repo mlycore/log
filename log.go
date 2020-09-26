@@ -32,6 +32,7 @@ type Logger struct {
 	CallPath int
 	Color    bool
 	// Context  Context
+	Async bool
 }
 
 func init() {
@@ -96,9 +97,16 @@ func (l *Logger) SetFormatter(f Formatter) *Logger {
 	return l
 }
 
+
+func (l *Logger)EnableAsync() *Logger {
+	l.Async = true
+	return l
+}
+
 func SetContext(ctx Context) *Entry {
 	return logger.SetContext(ctx)
 }
+
 
 func (l *Logger) SetContext(ctx Context) *Entry {
 	// l.Context = ctx
