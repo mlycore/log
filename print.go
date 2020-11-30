@@ -1,11 +1,7 @@
 package log
 
 import (
-	"fmt"
 	"os"
-	"runtime"
-	"strings"
-	"time"
 )
 
 // Traceln print trace level logs in a line

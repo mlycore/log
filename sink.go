@@ -19,5 +19,8 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 package log
 
 type Sink interface {
-	Receiver()  chan struct{fields Fields, ctx Context}
+	Receiver()  chan struct{
+		fields Fields
+		ctx Context
+	}
 }
