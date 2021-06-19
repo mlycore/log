@@ -8,29 +8,30 @@ import (
 )
 
 func Test_Log(t *testing.T) {
-    NewDefaultLogger()
+	NewDefaultLogger()
 	SetFormatter(&TextFormatter{})
 	logger.SetLevelByName("TRACE")
-	printall("TRACE")
+	printall(logger.Level)
 
 	logger.SetLevelByName("DEBUG")
-	printall("DEBUG")
+	printall(logger.Level)
 
 	logger.SetLevelByName("INFO")
-	printall("INFO")
+	printall(logger.Level)
 
 	logger.SetLevelByName("WARN")
-	printall("WARN")
+	printall(logger.Level)
 
 	logger.SetLevelByName("ERROR")
-	printall("ERROR")
+	printall(logger.Level)
 
 	logger.SetLevelByName("FATAL")
-	printall("FATAL")
+	printall(logger.Level)
 }
 
-func printall(level string) {
-	str := fmt.Sprintf("this is level %s", level)
+func printall(level int) {
+	l := LogLevelMap[level]
+	str := fmt.Sprintf("this is level %s", l)
 	Traceln("traceln: " + str)
 	Tracef("tracef: %s", str)
 	Debugln("debugln: " + str)
@@ -64,19 +65,26 @@ func Test_FormatterLogger(t *testing.T) {
 	NewDefaultLogger()
 	SetFormatter(&JSONFormatter{})
 	// SetFormatter(&TextFormatter{})
-/*
-	SetContext(Context{
-		"namespace": "default",
-		"deployment": "kubestar",
-	})
- */
+	/*
+		SetContext(Context{
+			"namespace": "default",
+			"deployment": "kubestar",
+		})
+	*/
 
 	Infoln("deployment create success")
 	Errorf("service create error")
 
 	SetContext(Context{
-		"namespace": "starpay",
+		"namespace":  "starpay",
 		"deployment": "uuid",
 	})
 	Infoln("deployment list success")
+}
+
+func Test_DefaultLogger(t *testing.T) {
+	NewDefaultLogger()
+	SetFormatter(&TextFormatter{})
+	logger.SetLevelByName("WaRN")
+	printall(logger.Level)
 }

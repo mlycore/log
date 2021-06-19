@@ -4,12 +4,11 @@ import (
 	"fmt"
 	"io"
 	"os"
+	"runtime"
 	"strings"
 	"sync"
 	"time"
-	"runtime"
 )
-
 
 // Logger defines a general logger which could write specific logs
 type Logger struct {
@@ -21,17 +20,21 @@ type Logger struct {
 	Level    int
 	CallPath int
 	Color    bool
+	Async    bool
+	Sink     Sink
 	// Context  Context
-	Async bool
 }
 
 func init() {
 	NewDefaultLogger()
 	SetFormatter(&TextFormatter{})
 	SetLevel(EnvLogLevelInfo)
+	SetSink(&StdioSink{})
+
+	//go logger.flushDaemon()
 }
 
-func (l *Logger)newEntry() *Entry {
+func (l *Logger) newEntry() *Entry {
 	entry, ok := l.entries.Get().(*Entry)
 	if ok {
 		return entry
@@ -40,7 +43,7 @@ func (l *Logger)newEntry() *Entry {
 	return NewEntry()
 }
 
-func (l *Logger)releaseEntry(e *Entry) {
+func (l *Logger) releaseEntry(e *Entry) {
 	l.entries.Put(e)
 }
 
@@ -87,8 +90,7 @@ func (l *Logger) SetFormatter(f Formatter) *Logger {
 	return l
 }
 
-
-func (l *Logger)EnableAsync() *Logger {
+func (l *Logger) EnableAsync() *Logger {
 	l.Async = true
 	return l
 }
@@ -96,7 +98,6 @@ func (l *Logger)EnableAsync() *Logger {
 func SetContext(ctx Context) *Entry {
 	return logger.SetContext(ctx)
 }
-
 
 func (l *Logger) SetContext(ctx Context) *Entry {
 	// l.Context = ctx
@@ -118,7 +119,6 @@ func SetLevel(lv string) {
 	logger.SetLevelByName(lv)
 }
 
-
 // LogLevelMap is log level map
 var LogLevelMap = map[int]string{
 	LogLevelUnspecified: "UNSPECIFIED",
@@ -139,33 +139,20 @@ func (l *Logger) SetLevel(level int) {
 
 // SetLevelByName set the log level by name
 func (l *Logger) SetLevelByName(level string) {
-	switch level {
-	case EnvLogLevelError:
-		{
-			l.SetLevel(LogLevelError)
-		}
-	case EnvLogLevelWarn:
-		{
-			l.SetLevel(LogLevelWarn)
-		}
-	case EnvLogLevelInfo:
-		{
-			l.SetLevel(LogLevelInfo)
-		}
-	case EnvLogLevelDebug:
-		{
-			l.SetLevel(LogLevelDebug)
-		}
-	case EnvLogLevelTrace:
-		{
-			l.SetLevel(LogLevelTrace)
-		}
-	case EnvLogLevelFatal:
-		{
-			l.SetLevel(LogLevelFatal)
-		}
-	default:
+	if strings.EqualFold(level, EnvLogLevelError) {
+		l.SetLevel(LogLevelError)
+	}
+	if strings.EqualFold(level, EnvLogLevelWarn) {
 		l.SetLevel(LogLevelWarn)
+	}
+	if strings.EqualFold(level, EnvLogLevelInfo) {
+		l.SetLevel(LogLevelInfo)
+	}
+	if strings.EqualFold(level, EnvLogLevelDebug) {
+		l.SetLevel(LogLevelDebug)
+	}
+	if strings.EqualFold(level, EnvLogLevelTrace) {
+		l.SetLevel(LogLevelTrace)
 	}
 }
 
@@ -233,4 +220,8 @@ func (l *Logger) printf(level int, ctx Context, format string, v ...interface{})
 	} else {
 		l.doPrint(level, ctx, format, v...)
 	}
+}
+
+func SetSink(s Sink) {
+	logger.Sink = s
 }
