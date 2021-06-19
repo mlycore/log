@@ -1,6 +1,5 @@
 package log
 
-
 // UNSPECIFIED means no log level
 const (
 	LogLevelUnspecified int = iota

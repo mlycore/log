@@ -9,14 +9,14 @@ type Entry struct {
 	Context Context
 }
 
-func NewEntry() *Entry{
+func NewEntry() *Entry {
 	return &Entry{
-		logger: logger,
-		Context:    Context{},
+		logger:  logger,
+		Context: Context{},
 	}
 }
 
-func (e *Entry)WithContext(ctx Context) *Entry {
+func (e *Entry) WithContext(ctx Context) *Entry {
 	e.Context = ctx
 	return e
 }
@@ -106,4 +106,3 @@ func (e *Entry) Fatalf(format string, v ...interface{}) {
 		os.Exit(1)
 	}
 }
-
