@@ -9,7 +9,7 @@ import (
 
 func Test_Log(t *testing.T) {
 	NewDefaultLogger()
-	SetFormatter(&TextFormatter{})
+	SetFormatter(&TextFormatter{Color: false})
 	logger.SetLevelByName("TRACE")
 	printall(logger.Level)
 
@@ -55,7 +55,7 @@ func Test_FuncInfo(t *testing.T) {
 
 func Test_GetShortFileName(t *testing.T) {
 	name := "github.com/xuyun-io/kubestar/pkg/controllers/crd/application.(*ApplicationController).List"
-	NewLogger(os.Stdout, 0, 3, true)
+	NewLogger(os.Stdout, 0, 3)
 	SetLevel("ERROR")
 	Errorf("%s", getShortFileName(name))
 	// t.Logf("%s\n", getShortFileName(name))
@@ -87,4 +87,14 @@ func Test_DefaultLogger(t *testing.T) {
 	SetFormatter(&TextFormatter{})
 	logger.SetLevelByName("WaRN")
 	printall(logger.Level)
+}
+
+func Benchmark_Infof(b *testing.B) {
+	NewDefaultLogger()
+	SetFormatter(&TextFormatter{})
+	logger.SetLevelByName("TRACE")
+
+	for i := 0; i < b.N; i++ {
+		logger.Infof("key %s", "value")
+	}
 }

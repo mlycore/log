@@ -89,4 +89,3 @@ func Fatalf(format string, v ...interface{}) {
 		os.Exit(1)
 	}
 }
-

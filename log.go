@@ -19,7 +19,6 @@ type Logger struct {
 
 	Level    int
 	CallPath int
-	Color    bool
 	Async    bool
 	Sink     Sink
 	// Context  Context
@@ -27,7 +26,7 @@ type Logger struct {
 
 func init() {
 	NewDefaultLogger()
-	SetFormatter(&TextFormatter{})
+	SetFormatter(&TextFormatter{Color: false})
 	SetLevel(EnvLogLevelInfo)
 	SetSink(&StdioSink{})
 
@@ -63,13 +62,12 @@ var logger = &Logger{
 */
 
 // NewLogger returns a instance of Logger
-func NewLogger(writer io.Writer, level, caller int, color bool) *Logger {
+func NewLogger(writer io.Writer, level, caller int) *Logger {
 	once.Do(func() {
 		logger = &Logger{
 			Writer:   writer,
 			Level:    level,
 			CallPath: caller,
-			Color:    color,
 		}
 	})
 	return logger
@@ -77,12 +75,12 @@ func NewLogger(writer io.Writer, level, caller int, color bool) *Logger {
 
 // NewDefaultLogger returns a instance of Logger with default configurations
 func NewDefaultLogger() {
-	logger = NewLogger(os.Stdout, LogLevelDefault, CallPathDefault, ColorOn)
+	logger = NewLogger(os.Stdout, LogLevelDefault, CallPathDefault)
 }
 
 func SetFormatter(f Formatter) {
 	logger.SetFormatter(f)
-	f.SetColor(logger.Color)
+	//f.SetColor()
 }
 
 func (l *Logger) SetFormatter(f Formatter) *Logger {
