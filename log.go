@@ -194,7 +194,7 @@ func (l *Logger) doPrint(level int, ctx Context, format string, v ...interface{}
 
 	var formatString string
 	if strings.EqualFold("", format) {
-		formatString = fmt.Sprint(v...)
+		formatString = fmt.Sprintln(v...)
 	} else {
 		formatString = fmt.Sprintf(format, v...)
 	}
