@@ -99,3 +99,9 @@ func Benchmark_Infof(b *testing.B) {
 		logger.Infof("key %s", "value")
 	}
 }
+
+func Test_LogFile(t *testing.T) {
+	NewDefaultLogger()
+	SetLogFile("./test.log")
+	logger.Infoln("a", "b")
+}

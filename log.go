@@ -48,6 +48,7 @@ func (l *Logger) releaseEntry(e *Entry) {
 
 var once sync.Once
 var logger *Logger
+var file *os.File
 
 // Log is one glocal logger which can be used in any packages
 // var Log = NewLogger(os.Stdout, INFO)
@@ -76,6 +77,28 @@ func NewLogger(writer io.Writer, level, caller int) *Logger {
 // NewDefaultLogger returns a instance of Logger with default configurations
 func NewDefaultLogger() {
 	logger = NewLogger(os.Stdout, LogLevelDefault, CallPathDefault)
+}
+
+const DefaultLogFile = "./access.log"
+
+func SetDefaultLogFile() {
+	SetLogFile(DefaultLogFile)
+}
+
+func SetLogFile(path string) {
+	f, err := os.Open(path)
+	if err != nil {
+		f, err := os.Create(path)
+		if err != nil {
+			panic(err)
+		} else {
+			file = f
+		}
+	} else {
+		file = f
+	}
+
+	logger.Writer = file
 }
 
 func SetFormatter(f Formatter) {
@@ -200,6 +223,7 @@ func (l *Logger) doPrint(level int, ctx Context, format string, v ...interface{}
 	}
 	fields.Msg = formatString
 
+	// this is core print functions
 	msg := l.formatter.Print(fields, ctx)
 	fmt.Fprintln(l.Writer, msg)
 }
