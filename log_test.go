@@ -85,8 +85,9 @@ func Test_FormatterLogger(t *testing.T) {
 func Test_DefaultLogger(t *testing.T) {
 	NewDefaultLogger()
 	SetFormatter(&TextFormatter{})
-	logger.SetLevelByName("WaRN")
-	printall(logger.Level)
+	logger.SetLevelByName("InFo")
+	//printall(logger.Level)
+	logger.Infoln("a", "b")
 }
 
 func Benchmark_Infof(b *testing.B) {
@@ -97,4 +98,10 @@ func Benchmark_Infof(b *testing.B) {
 	for i := 0; i < b.N; i++ {
 		logger.Infof("key %s", "value")
 	}
+}
+
+func Test_LogFile(t *testing.T) {
+	NewDefaultLogger()
+	SetLogFile("./test.log")
+	logger.Infoln("a", "b")
 }
