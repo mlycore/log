@@ -86,7 +86,8 @@ func SetDefaultLogFile() {
 }
 
 func SetLogFile(path string) {
-	f, err := os.Open(path)
+
+	f, err := os.OpenFile(path, os.O_RDWR | os.O_APPEND, 0666)
 	if err != nil {
 		f, err := os.Create(path)
 		if err != nil {
