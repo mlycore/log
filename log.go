@@ -100,6 +100,7 @@ func SetLogFile(path string) {
 	}
 
 	logger.Writer = file
+	println(file.Name())
 }
 
 func SetFormatter(f Formatter) {
