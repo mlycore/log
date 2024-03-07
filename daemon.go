@@ -14,6 +14,7 @@
 
 package log
 
+/*
 import (
 	"bytes"
 	"time"
@@ -53,3 +54,4 @@ func (l *Logger) flushAll() error {
 		}
 	}
 }
+*/
