@@ -70,9 +70,10 @@ func NewDefaultLogger() {
 func NewLogger(writer io.Writer, level, caller int) *Logger {
 	once.Do(func() {
 		logger = &Logger{
-			Writer:   writer,
-			Level:    level,
-			CallPath: caller,
+			Writer:    writer,
+			Level:     level,
+			CallPath:  caller,
+			formatter: &TextFormatter{},
 		}
 	})
 	return logger
@@ -124,6 +125,11 @@ func SetLevel(lv string) {
 // SetCallPath set caller path
 func SetCallPath(caller int) {
 	logger.SetCallPath(caller)
+}
+
+// SetWriter set writer
+func SetWriter(w io.Writer) {
+	logger.Writer = w
 }
 
 /*
