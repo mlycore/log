@@ -37,7 +37,7 @@ func (t *JSONFormatter) SetColor(color bool) {
 }
 
 func (t *JSONFormatter) Print(fields *Fields, ctx Context) string {
-	if ctx == nil || len(ctx) == 0 {
+	if ctx == nil {
 		ctx = make(map[string]string)
 	}
 	ctx["msg"] = fields.Msg
@@ -48,10 +48,7 @@ func (t *JSONFormatter) Print(fields *Fields, ctx Context) string {
 		panic(err)
 	}
 
-	var msg string
-	msg = fmt.Sprintf("%s", string(data))
-
-	return msg
+	return string(data)
 }
 
 type TextFormatter struct {
@@ -63,7 +60,7 @@ func (t *TextFormatter) SetColor(color bool) {
 }
 
 func (t *TextFormatter) Print(fields *Fields, ctx Context) string {
-	if ctx == nil || len(ctx) == 0 {
+	if ctx == nil {
 		ctx = make(map[string]string)
 	}
 	ctx["msg"] = fields.Msg
