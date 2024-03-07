@@ -14,6 +14,7 @@
 
 package log
 
+/*
 import "bytes"
 
 type logEvent struct {
@@ -38,3 +39,4 @@ func (s *StdioSink) Receiver() chan logEvent {
 func (s *StdioSink) Output() error {
 	return nil
 }
+*/

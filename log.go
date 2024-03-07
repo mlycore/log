@@ -28,7 +28,7 @@ func init() {
 	NewDefaultLogger()
 	SetFormatter(&TextFormatter{Color: false})
 	SetLevel(EnvLogLevelInfo)
-	SetSink(&StdioSink{})
+	// SetSink(&StdioSink{})
 
 	//go logger.flushDaemon()
 }
@@ -44,7 +44,7 @@ type Logger struct {
 	Level    int
 	CallPath int
 	Async    bool
-	Sink     Sink
+	// Sink     Sink
 	// Context  Context
 }
 
@@ -263,6 +263,8 @@ func (l *Logger) printf(level int, ctx Context, format string, v ...interface{})
 	}
 }
 
+/*
 func SetSink(s Sink) {
 	logger.Sink = s
 }
+*/
