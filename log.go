@@ -24,9 +24,19 @@ import (
 	"time"
 )
 
+func init() {
+	NewDefaultLogger()
+	SetFormatter(&TextFormatter{Color: false})
+	SetLevel(EnvLogLevelInfo)
+	SetSink(&StdioSink{})
+
+	//go logger.flushDaemon()
+}
+
 // Logger defines a general logger which could write specific logs
 type Logger struct {
-	Writer    io.Writer
+	Writer io.Writer
+
 	mu        sync.Mutex
 	formatter Formatter
 	entries   sync.Pool
@@ -36,15 +46,6 @@ type Logger struct {
 	Async    bool
 	Sink     Sink
 	// Context  Context
-}
-
-func init() {
-	NewDefaultLogger()
-	SetFormatter(&TextFormatter{Color: false})
-	SetLevel(EnvLogLevelInfo)
-	SetSink(&StdioSink{})
-
-	//go logger.flushDaemon()
 }
 
 func (l *Logger) newEntry() *Entry {
@@ -65,16 +66,18 @@ var logger *Logger
 var file *os.File
 
 // Log is one glocal logger which can be used in any packages
+// e.g.
+// 1.
 // var Log = NewLogger(os.Stdout, INFO)
+// 2.
 // var logger = NewLogger(os.Stdout, INFO, CallPath)
-/*
-var logger = &Logger{
-	Writer:   os.Stdout,
-	Level:    INFO,
-	CallPath: 3,
-	Color:    true,
-}
-*/
+// 3.
+// var logger = &Logger{
+// 	Writer:   os.Stdout,
+// 	Level:    INFO,
+// 	CallPath: 3,
+// 	Color:    true,
+// }
 
 // NewLogger returns a instance of Logger
 func NewLogger(writer io.Writer, level, caller int) *Logger {
@@ -93,14 +96,11 @@ func NewDefaultLogger() {
 	logger = NewLogger(os.Stdout, LogLevelDefault, CallPathDefault)
 }
 
-const DefaultLogFile = "./access.log"
-
 func SetDefaultLogFile() {
 	SetLogFile(DefaultLogFile)
 }
 
 func SetLogFile(path string) {
-
 	f, err := os.OpenFile(path, os.O_RDWR|os.O_APPEND, 0666)
 	if err != nil {
 		f, err := os.Create(path)
