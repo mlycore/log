@@ -19,10 +19,8 @@ import (
 	"fmt"
 	"io"
 	"os"
-	"runtime"
 	"strings"
 	"sync"
-	"time"
 )
 
 type Logger struct {
@@ -102,42 +100,12 @@ func (l *Logger) SetCallPath(callPath int) {
 
 func (l *Logger) doPrint(level int, ctx Context, format string, v ...interface{}) {
 	fields := Fields{
-		Timestamp: "",
-		Level:     "",
-		Msg:       "",
-		Func:      "",
-		File:      "",
-		Line:      0,
+		Timestamp: getTimestamp(),
+		Level:     getLogLevel(level),
+		Msg:       formattedMessage(format, v...),
 	}
 
-	if _, err := time.LoadLocation(LocationLocal); err != nil {
-		fmt.Printf("log error: %s\n", err.Error())
-	}
-
-	timestamp := time.Now().Format(TimeFormatDefault)
-	fields.Timestamp = timestamp
-
-	loglevel := LogLevelMap[level]
-	fields.Level = loglevel
-
-	l.mu.Lock()
-	defer l.mu.Unlock()
-
-	pc, file, line, _ := runtime.Caller(l.CallPath)
-	funcname := runtime.FuncForPC(pc).Name()
-	fields.Func = funcname
-	fields.Line = line
-
-	file = getShortFileName(file)
-	fields.File = file
-
-	var formatString string
-	if strings.EqualFold("", format) {
-		formatString = fmt.Sprintln(v...)
-	} else {
-		formatString = fmt.Sprintf(format, v...)
-	}
-	fields.Msg = formatString
+	fields.File, fields.Func, fields.Line = getFuncInfo(l.CallPath)
 
 	// this is core print functions
 	msg := l.formatter.Print(&fields, ctx)
