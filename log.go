@@ -29,10 +29,6 @@ func init() {
 	//go logger.flushDaemon()
 }
 
-var once sync.Once
-var logger *Logger
-var file *os.File
-
 // Log is one glocal logger which can be used in any packages
 // e.g.
 // 1.
@@ -40,12 +36,35 @@ var file *os.File
 // 2.
 // var logger = NewLogger(os.Stdout, INFO, CallPath)
 // 3.
-// var logger = &Logger{
-// 	Writer:   os.Stdout,
-// 	Level:    INFO,
-// 	CallPath: 3,
-// 	Color:    true,
-// }
+//
+//	var logger = &Logger{
+//		Writer:   os.Stdout,
+//		Level:    INFO,
+//		CallPath: 3,
+//		Color:    true,
+//	}
+var logger *Logger
+
+var (
+	once sync.Once
+	file *os.File
+
+	// LogLevelMap is log level map
+	LogLevelMap = map[int]string{
+		LogLevelUnspecified: "UNSPECIFIED",
+		LogLevelTrace:       "TRACE",
+		LogLevelDebug:       "DEBUG",
+		LogLevelInfo:        "INFO",
+		LogLevelWarn:        "WARN",
+		LogLevelError:       "ERROR",
+		LogLevelFatal:       "FATAL",
+	}
+)
+
+// NewDefaultLogger returns a instance of Logger with default configurations
+func NewDefaultLogger() {
+	logger = NewLogger(os.Stdout, LogLevelDefault, CallPathDefault)
+}
 
 // NewLogger returns a instance of Logger
 func NewLogger(writer io.Writer, level, caller int) *Logger {
@@ -57,11 +76,6 @@ func NewLogger(writer io.Writer, level, caller int) *Logger {
 		}
 	})
 	return logger
-}
-
-// NewDefaultLogger returns a instance of Logger with default configurations
-func NewDefaultLogger() {
-	logger = NewLogger(os.Stdout, LogLevelDefault, CallPathDefault)
 }
 
 func SetDefaultLogFile() {
@@ -105,17 +119,6 @@ type LoggerIface interface {
 // SetLevel set log level by name
 func SetLevel(lv string) {
 	logger.SetLevelByName(lv)
-}
-
-// LogLevelMap is log level map
-var LogLevelMap = map[int]string{
-	LogLevelUnspecified: "UNSPECIFIED",
-	LogLevelTrace:       "TRACE",
-	LogLevelDebug:       "DEBUG",
-	LogLevelInfo:        "INFO",
-	LogLevelWarn:        "WARN",
-	LogLevelError:       "ERROR",
-	LogLevelFatal:       "FATAL",
 }
 
 // SetCallPath set caller path
