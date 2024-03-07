@@ -70,9 +70,10 @@ func NewDefaultLogger() {
 func NewLogger(writer io.Writer, level, caller int) *Logger {
 	once.Do(func() {
 		logger = &Logger{
-			Writer:   writer,
-			Level:    level,
-			CallPath: caller,
+			Writer:    writer,
+			Level:     level,
+			CallPath:  caller,
+			formatter: &TextFormatter{},
 		}
 	})
 	return logger
@@ -126,6 +127,11 @@ func SetCallPath(caller int) {
 	logger.SetCallPath(caller)
 }
 
+// SetWriter set writer
+func SetWriter(w io.Writer) {
+	logger.Writer = w
+}
+
 /*
 func SetSink(s Sink) {
 	logger.Sink = s
@@ -134,86 +140,60 @@ func SetSink(s Sink) {
 
 // Traceln print trace level logs in a line
 func Traceln(v ...interface{}) {
-	if LogLevelTrace >= logger.Level {
-		logger.println(LogLevelTrace, Context{}, v...)
-	}
+	logger.Traceln(v...)
 }
 
 // Tracef print trace level logs in a specific format
 func Tracef(format string, v ...interface{}) {
-	if LogLevelTrace >= logger.Level {
-		logger.printf(LogLevelTrace, Context{}, format, v...)
-	}
+	logger.Tracef(format, v...)
 }
 
 // Debugln print debug level logs in a line
 func Debugln(v ...interface{}) {
-	if LogLevelDebug >= logger.Level {
-		logger.println(LogLevelDebug, Context{}, v...)
-	}
+	logger.Debugln(v...)
 }
 
 // Debugf print debug level logs in a specific format
 func Debugf(format string, v ...interface{}) {
-	if LogLevelDebug >= logger.Level {
-		logger.printf(LogLevelDebug, Context{}, format, v...)
-	}
+	logger.Debugf(format, v...)
 }
 
 // Infoln print info level logs in a line
 func Infoln(v ...interface{}) {
-	if LogLevelInfo >= logger.Level {
-		logger.println(LogLevelInfo, Context{}, v...)
-	}
+	logger.Infoln(v...)
 }
 
 // Infof print info level logs in a specific format
 func Infof(format string, v ...interface{}) {
-	if LogLevelInfo >= logger.Level {
-		logger.printf(LogLevelInfo, Context{}, format, v...)
-	}
+	logger.Infof(format, v...)
 }
 
 // Warnln print warn level logs in a line
 func Warnln(v ...interface{}) {
-	if LogLevelWarn >= logger.Level {
-		logger.println(LogLevelWarn, Context{}, v...)
-	}
+	logger.Warnln(v...)
 }
 
 // Warnf print warn level logs in a specific format
 func Warnf(format string, v ...interface{}) {
-	if LogLevelWarn >= logger.Level {
-		logger.printf(LogLevelWarn, Context{}, format, v...)
-	}
+	logger.Warnf(format, v...)
 }
 
 // Errorln print error level logs in a line
 func Errorln(v ...interface{}) {
-	if LogLevelError >= logger.Level {
-		logger.println(LogLevelError, Context{}, v...)
-	}
+	logger.Errorln(v...)
 }
 
 // Errorf print error level logs in a specific format
 func Errorf(format string, v ...interface{}) {
-	if LogLevelError >= logger.Level {
-		logger.printf(LogLevelError, Context{}, format, v...)
-	}
+	logger.Errorf(format, v...)
 }
 
 // Fatalln print fatal level logs in a line
 func Fatalln(v ...interface{}) {
-	if LogLevelFatal >= logger.Level {
-		logger.println(LogLevelFatal, Context{}, v...)
-		os.Exit(1)
-	}
+	logger.Fatalln(v...)
 }
 
 // Fatalf print fatal level logs in a specific format
 func Fatalf(format string, v ...interface{}) {
-	if LogLevelFatal >= logger.Level {
-		logger.printf(LogLevelFatal, Context{}, format, v...)
-		os.Exit(1)
-	}
+	logger.Fatalf(format, v...)
 }
