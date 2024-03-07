@@ -28,7 +28,7 @@ func init() {
 	NewDefaultLogger()
 	SetFormatter(&TextFormatter{Color: false})
 	SetLevel(EnvLogLevelInfo)
-	SetSink(&StdioSink{})
+	// SetSink(&StdioSink{})
 
 	//go logger.flushDaemon()
 }
@@ -44,7 +44,7 @@ type Logger struct {
 	Level    int
 	CallPath int
 	Async    bool
-	Sink     Sink
+	// Sink     Sink
 	// Context  Context
 }
 
@@ -213,7 +213,10 @@ func (l *Logger) doPrint(level int, ctx Context, format string, v ...interface{}
 		Line:      0,
 	}
 
-	time.LoadLocation(LocationLocal)
+	if _, err := time.LoadLocation(LocationLocal); err != nil {
+		fmt.Printf("log error: %s\n", err.Error())
+	}
+
 	timestamp := time.Now().Format(TimeFormatDefault)
 	fields.Timestamp = timestamp
 
@@ -240,7 +243,7 @@ func (l *Logger) doPrint(level int, ctx Context, format string, v ...interface{}
 	fields.Msg = formatString
 
 	// this is core print functions
-	msg := l.formatter.Print(fields, ctx)
+	msg := l.formatter.Print(&fields, ctx)
 	fmt.Fprintln(l.Writer, msg)
 }
 
@@ -260,6 +263,8 @@ func (l *Logger) printf(level int, ctx Context, format string, v ...interface{})
 	}
 }
 
+/*
 func SetSink(s Sink) {
 	logger.Sink = s
 }
+*/
