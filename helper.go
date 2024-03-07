@@ -14,9 +14,43 @@
 
 package log
 
-import "strings"
+import (
+	"fmt"
+	"runtime"
+	"strings"
+	"time"
+)
 
 func getShortFileName(file string) string {
 	index := strings.LastIndex(file, "/")
 	return file[index+1:]
+}
+
+func getTimestamp() string {
+	if _, err := time.LoadLocation(LocationLocal); err != nil {
+		fmt.Printf("log error: %s\n", err.Error())
+	}
+
+	return time.Now().Format(TimeFormatDefault)
+}
+
+func getLogLevel(level int) string {
+	return LogLevelMap[level]
+}
+
+func getFuncInfo(callpath int) (file, funcname string, line int) {
+	var pc uintptr
+	pc, file, line, _ = runtime.Caller(callpath)
+	funcname = runtime.FuncForPC(pc).Name()
+	file = getShortFileName(file)
+	return
+}
+
+func formattedMessage(format string, v ...interface{}) (formatString string) {
+	if strings.EqualFold("", format) {
+		formatString = fmt.Sprintln(v...)
+	} else {
+		formatString = fmt.Sprintf(format, v...)
+	}
+	return
 }
