@@ -23,20 +23,26 @@ const (
 	LogLevelWarn
 	LogLevelError
 	LogLevelFatal
+)
 
+const (
 	EnvLogLevelTrace = "TRACE"
 	EnvLogLevelDebug = "DEBUG"
 	EnvLogLevelInfo  = "INFO"
 	EnvLogLevelWarn  = "WARN"
 	EnvLogLevelError = "ERROR"
 	EnvLogLevelFatal = "FATAL"
+)
 
+const (
 	// CallPath is The depth of a function is called
 	CallPathDepth1  = 1
 	CallPathDepth2  = 2
 	CallPathDepth3  = 3
 	CallPathDefault = CallPathDepth3
+)
 
+const (
 	// Color refers to if
 	ColorOn  = true
 	ColorOff = false
@@ -49,4 +55,7 @@ const (
 
 	// TimeFormatDefault is The default format of time
 	TimeFormatDefault = "2006-01-02 15:04:05.0000"
+
+	// DefaultLogFile is the default log file path
+	DefaultLogFile = "./access.log"
 )
