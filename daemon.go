@@ -21,19 +21,20 @@ import (
 
 const flushInterval = 30 * time.Second
 
-func (l *Logger) flushDaemon() {
+func (l *Logger) flushDaemon() error {
 	for _ = range time.NewTicker(flushInterval).C {
-		l.lockAndFlushAll()
+		return l.lockAndFlushAll()
 	}
+	return nil
 }
 
-func (l *Logger) lockAndFlushAll() {
+func (l *Logger) lockAndFlushAll() error {
 	l.mu.Lock()
 	defer l.mu.Unlock()
-	l.flushAll()
+	return l.flushAll()
 }
 
-func (l *Logger) flushAll() {
+func (l *Logger) flushAll() error {
 	ch := l.Sink.Receiver()
 	var buf *bytes.Buffer
 	for {
@@ -41,7 +42,9 @@ func (l *Logger) flushAll() {
 		case e := <-ch:
 			{
 				buf = bytes.NewBuffer([]byte(e.fields.Msg))
-				l.Writer.Write(buf.Bytes())
+				if _, err := l.Writer.Write(buf.Bytes()); err != nil {
+					return err
+				}
 			}
 		default:
 			{
