@@ -213,7 +213,10 @@ func (l *Logger) doPrint(level int, ctx Context, format string, v ...interface{}
 		Line:      0,
 	}
 
-	time.LoadLocation(LocationLocal)
+	if _, err := time.LoadLocation(LocationLocal); err != nil {
+		fmt.Printf("log error: %s\n", err.Error())
+	}
+
 	timestamp := time.Now().Format(TimeFormatDefault)
 	fields.Timestamp = timestamp
 
@@ -240,7 +243,7 @@ func (l *Logger) doPrint(level int, ctx Context, format string, v ...interface{}
 	fields.Msg = formatString
 
 	// this is core print functions
-	msg := l.formatter.Print(fields, ctx)
+	msg := l.formatter.Print(&fields, ctx)
 	fmt.Fprintln(l.Writer, msg)
 }
 
