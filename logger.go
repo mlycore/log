@@ -128,7 +128,7 @@ var lepool = sync.Pool{
 	},
 }
 
-func (l *Logger) doPrintln(ctx Context, msg string) {
+func (l *Logger) doPrintln(msg string) {
 	// TODO: make functions meta a optional argument
 	// fields.File, fields.Func, fields.Line = getFuncInfo(l.CallPath)
 
@@ -146,11 +146,11 @@ func (l *Logger) doPrintln(ctx Context, msg string) {
 	_, _ = l.Writer.Write(e.buf)
 }
 
-func (l *Logger) println(ctx Context, msg string) {
+func (l *Logger) println(msg string) {
 	if l.Async {
-		go l.doPrintln(ctx, msg)
+		go l.doPrintln(msg)
 	} else {
-		l.doPrintln(ctx, msg)
+		l.doPrintln(msg)
 	}
 }
 
@@ -167,7 +167,7 @@ type Context map[string]string
 // Traceln print trace level logs in a line
 func (l *Logger) Traceln(msg string) {
 	if LogLevelTrace >= logger.Level {
-		l.println(Context{}, msg)
+		l.println(msg)
 	}
 }
 
@@ -181,7 +181,7 @@ func (l *Logger) Tracef(format string, v ...interface{}) {
 // Debugln print debug level logs in a line
 func (l *Logger) Debugln(msg string) {
 	if LogLevelDebug >= logger.Level {
-		l.println(Context{}, msg)
+		l.println(msg)
 	}
 }
 
@@ -195,7 +195,7 @@ func (l *Logger) Debugf(format string, v ...interface{}) {
 // Infoln print info level logs in a line
 func (l *Logger) Infoln(msg string) {
 	if LogLevelInfo >= logger.Level {
-		l.println(Context{}, msg)
+		l.println(msg)
 	}
 }
 
@@ -209,7 +209,7 @@ func (l *Logger) Infof(format string, v ...interface{}) {
 // Warnln print warn level logs in a line
 func (l *Logger) Warnln(msg string) {
 	if LogLevelWarn >= logger.Level {
-		l.println(Context{}, msg)
+		l.println(msg)
 	}
 }
 
@@ -223,7 +223,7 @@ func (l *Logger) Warnf(format string, v ...interface{}) {
 // Errorln print error level logs in a line
 func (l *Logger) Errorln(msg string) {
 	if LogLevelError >= logger.Level {
-		l.println(Context{}, msg)
+		l.println(msg)
 	}
 }
 
@@ -237,7 +237,7 @@ func (l *Logger) Errorf(format string, v ...interface{}) {
 // Fatalln print fatal level logs in a line
 func (l *Logger) Fatalln(msg string) {
 	if LogLevelFatal >= logger.Level {
-		l.println(Context{}, msg)
+		l.println(msg)
 		os.Exit(1)
 	}
 }
