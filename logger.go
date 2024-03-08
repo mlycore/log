@@ -134,11 +134,14 @@ func (l *Logger) doPrintln(ctx Context, msg string) {
 	// fields.File, fields.Func, fields.Line = getFuncInfo(l.CallPath)
 
 	e := lepool.Get().(*LogEntry)
+	e.buf = e.buf[:0]
 	defer lepool.Put(e)
 
 	e.buf = append(e.buf, time.Now().Format(TimeFormatDefault)...)
 	e.buf = append(e.buf, '[')
+	e.buf = append(e.buf, l.LevelStr...)
 	e.buf = append(e.buf, ']')
+	e.buf = append(e.buf, msg...)
 	e.buf = append(e.buf, '\n')
 
 	_, _ = l.Writer.Write(e.buf)
