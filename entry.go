@@ -36,9 +36,9 @@ func (e *Entry) WithContext(ctx Context) *Entry {
 }
 
 // Traceln print trace level logs in a line
-func (e *Entry) Traceln(v ...interface{}) {
+func (e *Entry) Traceln(msg string) {
 	if LogLevelTrace >= e.logger.Level {
-		e.logger.println(LogLevelTrace, e.Context, v...)
+		e.logger.println(LogLevelTrace, e.Context, msg)
 	}
 }
 
@@ -50,9 +50,9 @@ func (e *Entry) Tracef(format string, v ...interface{}) {
 }
 
 // Debugln print debug level logs in a line
-func (e *Entry) Debugln(v ...interface{}) {
+func (e *Entry) Debugln(msg string) {
 	if LogLevelDebug >= e.logger.Level {
-		e.logger.println(LogLevelDebug, e.Context, v...)
+		e.logger.println(LogLevelDebug, e.Context, msg)
 	}
 }
 
@@ -64,9 +64,9 @@ func (e *Entry) Debugf(format string, v ...interface{}) {
 }
 
 // Infoln print info level logs in a line
-func (e *Entry) Infoln(v ...interface{}) {
+func (e *Entry) Infoln(msg string) {
 	if LogLevelInfo >= e.logger.Level {
-		e.logger.println(LogLevelInfo, e.Context, v...)
+		e.logger.println(LogLevelInfo, e.Context, msg)
 	}
 }
 
@@ -78,9 +78,9 @@ func (e *Entry) Infof(format string, v ...interface{}) {
 }
 
 // Warnln print warn level logs in a line
-func (e *Entry) Warnln(v ...interface{}) {
+func (e *Entry) Warnln(msg string) {
 	if LogLevelWarn >= e.logger.Level {
-		e.logger.println(LogLevelWarn, e.Context, v...)
+		e.logger.println(LogLevelWarn, e.Context, msg)
 	}
 }
 
@@ -92,9 +92,9 @@ func (e *Entry) Warnf(format string, v ...interface{}) {
 }
 
 // Errorln print error level logs in a line
-func (e *Entry) Errorln(v ...interface{}) {
+func (e *Entry) Errorln(msg string) {
 	if LogLevelError >= e.logger.Level {
-		e.logger.println(LogLevelError, e.Context, v...)
+		e.logger.println(LogLevelError, e.Context, msg)
 	}
 }
 
@@ -106,9 +106,9 @@ func (e *Entry) Errorf(format string, v ...interface{}) {
 }
 
 // Fatalln print fatal level logs in a line
-func (e *Entry) Fatalln(v ...interface{}) {
+func (e *Entry) Fatalln(msg string) {
 	if LogLevelFatal >= e.logger.Level {
-		e.logger.println(LogLevelFatal, e.Context, v...)
+		e.logger.println(LogLevelFatal, e.Context, msg)
 		os.Exit(1)
 	}
 }

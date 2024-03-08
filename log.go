@@ -139,8 +139,8 @@ func SetSink(s Sink) {
 */
 
 // Traceln print trace level logs in a line
-func Traceln(v ...interface{}) {
-	logger.Traceln(v...)
+func Traceln(msg string) {
+	logger.Traceln(msg)
 }
 
 // Tracef print trace level logs in a specific format
@@ -149,8 +149,8 @@ func Tracef(format string, v ...interface{}) {
 }
 
 // Debugln print debug level logs in a line
-func Debugln(v ...interface{}) {
-	logger.Debugln(v...)
+func Debugln(msg string) {
+	logger.Debugln(msg)
 }
 
 // Debugf print debug level logs in a specific format
@@ -159,8 +159,8 @@ func Debugf(format string, v ...interface{}) {
 }
 
 // Infoln print info level logs in a line
-func Infoln(v ...interface{}) {
-	logger.Infoln(v...)
+func Infoln(msg string) {
+	logger.Infoln(msg)
 }
 
 // Infof print info level logs in a specific format
@@ -169,8 +169,8 @@ func Infof(format string, v ...interface{}) {
 }
 
 // Warnln print warn level logs in a line
-func Warnln(v ...interface{}) {
-	logger.Warnln(v...)
+func Warnln(msg string) {
+	logger.Warnln(msg)
 }
 
 // Warnf print warn level logs in a specific format
@@ -179,8 +179,8 @@ func Warnf(format string, v ...interface{}) {
 }
 
 // Errorln print error level logs in a line
-func Errorln(v ...interface{}) {
-	logger.Errorln(v...)
+func Errorln(msg string) {
+	logger.Errorln(msg)
 }
 
 // Errorf print error level logs in a specific format
@@ -189,8 +189,8 @@ func Errorf(format string, v ...interface{}) {
 }
 
 // Fatalln print fatal level logs in a line
-func Fatalln(v ...interface{}) {
-	logger.Fatalln(v...)
+func Fatalln(msg string) {
+	logger.Fatalln(msg)
 }
 
 // Fatalf print fatal level logs in a specific format
