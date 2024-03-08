@@ -72,6 +72,7 @@ func NewLogger(writer io.Writer, level, caller int) *Logger {
 		logger = &Logger{
 			Writer:    writer,
 			Level:     level,
+			LevelStr:  getLogLevel(level),
 			CallPath:  caller,
 			formatter: &TextFormatter{},
 		}

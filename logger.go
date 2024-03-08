@@ -30,7 +30,9 @@ type Logger struct {
 	formatter Formatter
 	entries   sync.Pool
 
-	Level    int
+	Level int
+	// TODO: remove this later
+	LevelStr string
 	CallPath int
 	Async    bool
 	// Sink     Sink
@@ -72,6 +74,7 @@ func (l *Logger) SetLevel(level int) {
 	l.mu.Lock()
 	defer l.mu.Unlock()
 	l.Level = level
+	l.LevelStr = getLogLevel(level)
 }
 
 // SetLevelByName set the log level by name
@@ -112,10 +115,10 @@ func (l *Logger) doPrint(level int, ctx Context, format string, v ...interface{}
 	fmt.Fprintln(l.Writer, msg)
 }
 
-func (l *Logger) doPrintln(level int, ctx Context, format string, msg string) {
+func (l *Logger) doPrintln(ctx Context, format string, msg string) {
 	fields := &Fields{
 		Timestamp: getTimestamp(),
-		Level:     getLogLevel(level),
+		Level:     l.LevelStr,
 		Msg:       msg,
 	}
 
