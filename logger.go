@@ -119,7 +119,8 @@ func (l *Logger) doPrintln(level int, ctx Context, format string, msg string) {
 		Msg:       msg,
 	}
 
-	fields.File, fields.Func, fields.Line = getFuncInfo(l.CallPath)
+	// TODO: make functions meta a optional argument
+	// fields.File, fields.Func, fields.Line = getFuncInfo(l.CallPath)
 
 	// this is core print functions
 	data := l.formatter.Print(fields, ctx)
