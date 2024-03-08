@@ -26,6 +26,7 @@ func getShortFileName(file string) string {
 	return file[index+1:]
 }
 
+// TODO: to be removed
 func getTimestamp() string {
 	if _, err := time.LoadLocation(LocationLocal); err != nil {
 		fmt.Printf("log error: %s\n", err.Error())
