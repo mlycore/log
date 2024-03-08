@@ -115,6 +115,7 @@ func (l *Logger) doPrint(level int, ctx Context, format string, v ...interface{}
 	fmt.Fprintln(l.Writer, msg)
 }
 
+// TODO: need refactor wth entry.go
 type LogEntry struct {
 	buf []byte
 }
