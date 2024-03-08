@@ -115,18 +115,26 @@ func (l *Logger) doPrint(level int, ctx Context, format string, v ...interface{}
 	fmt.Fprintln(l.Writer, msg)
 }
 
-func (l *Logger) doPrintln(ctx Context, format string, msg string) {
+func (l *Logger) doPrintln(ctx Context, msg string) {
 	// TODO: make functions meta a optional argument
 	// fields.File, fields.Func, fields.Line = getFuncInfo(l.CallPath)
 
-	fmt.Fprintf(l.Writer, "%s [%s] %s\n", getTimestamp(), l.LevelStr, msg)
+	var buf = []byte{}
+	buf = append(buf, getTimestamp()...)
+	buf = append(buf, " ["...)
+	buf = append(buf, l.LevelStr...)
+	buf = append(buf, "] "...)
+	buf = append(buf, msg...)
+	buf = append(buf, '\n')
+
+	_, _ = l.Writer.Write(buf)
 }
 
 func (l *Logger) println(ctx Context, msg string) {
 	if l.Async {
-		go l.doPrintln(ctx, "", msg)
+		go l.doPrintln(ctx, msg)
 	} else {
-		l.doPrintln(ctx, "", msg)
+		l.doPrintln(ctx, msg)
 	}
 }
 
