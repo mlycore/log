@@ -38,7 +38,7 @@ func (e *Entry) WithContext(ctx Context) *Entry {
 // Traceln print trace level logs in a line
 func (e *Entry) Traceln(msg string) {
 	if LogLevelTrace >= e.logger.Level {
-		e.logger.println(e.Context, msg)
+		e.logger.println(msg)
 	}
 }
 
@@ -52,7 +52,7 @@ func (e *Entry) Tracef(format string, v ...interface{}) {
 // Debugln print debug level logs in a line
 func (e *Entry) Debugln(msg string) {
 	if LogLevelDebug >= e.logger.Level {
-		e.logger.println(e.Context, msg)
+		e.logger.println(msg)
 	}
 }
 
@@ -66,7 +66,7 @@ func (e *Entry) Debugf(format string, v ...interface{}) {
 // Infoln print info level logs in a line
 func (e *Entry) Infoln(msg string) {
 	if LogLevelInfo >= e.logger.Level {
-		e.logger.println(e.Context, msg)
+		e.logger.println(msg)
 	}
 }
 
@@ -80,7 +80,7 @@ func (e *Entry) Infof(format string, v ...interface{}) {
 // Warnln print warn level logs in a line
 func (e *Entry) Warnln(msg string) {
 	if LogLevelWarn >= e.logger.Level {
-		e.logger.println(e.Context, msg)
+		e.logger.println(msg)
 	}
 }
 
@@ -94,7 +94,7 @@ func (e *Entry) Warnf(format string, v ...interface{}) {
 // Errorln print error level logs in a line
 func (e *Entry) Errorln(msg string) {
 	if LogLevelError >= e.logger.Level {
-		e.logger.println(e.Context, msg)
+		e.logger.println(msg)
 	}
 }
 
@@ -108,7 +108,7 @@ func (e *Entry) Errorf(format string, v ...interface{}) {
 // Fatalln print fatal level logs in a line
 func (e *Entry) Fatalln(msg string) {
 	if LogLevelFatal >= e.logger.Level {
-		e.logger.println(e.Context, msg)
+		e.logger.println(msg)
 		os.Exit(1)
 	}
 }
