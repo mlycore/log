@@ -116,19 +116,10 @@ func (l *Logger) doPrint(level int, ctx Context, format string, v ...interface{}
 }
 
 func (l *Logger) doPrintln(ctx Context, format string, msg string) {
-	fields := &Fields{
-		Timestamp: getTimestamp(),
-		Level:     l.LevelStr,
-		Msg:       msg,
-	}
-
 	// TODO: make functions meta a optional argument
 	// fields.File, fields.Func, fields.Line = getFuncInfo(l.CallPath)
 
-	// this is core print functions
-	// data := l.formatter.Print(fields, ctx)
-
-	fmt.Fprintf(l.Writer, "%s [%s] %s\n", fields.Timestamp, fields.Level, msg)
+	fmt.Fprintf(l.Writer, "%s [%s] %s\n", getTimestamp(), l.LevelStr, msg)
 }
 
 func (l *Logger) println(ctx Context, msg string) {
