@@ -21,7 +21,6 @@ import (
 	"os"
 	"strings"
 	"sync"
-	"time"
 )
 
 type Logger struct {
@@ -137,7 +136,7 @@ func (l *Logger) doPrintln(ctx Context, msg string) {
 	e.buf = e.buf[:0]
 	defer lepool.Put(e)
 
-	e.buf = append(e.buf, time.Now().Format(TimeFormatDefault)...)
+	e.timestamp()
 	e.buf = append(e.buf, '[')
 	e.buf = append(e.buf, l.LevelStr...)
 	e.buf = append(e.buf, ']')
