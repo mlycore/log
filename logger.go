@@ -115,19 +115,33 @@ func (l *Logger) doPrint(level int, ctx Context, format string, v ...interface{}
 	fmt.Fprintln(l.Writer, msg)
 }
 
+type LogEntry struct {
+	buf []byte
+}
+
+var lepool = sync.Pool{
+	New: func() any {
+		return &LogEntry{
+			buf: make([]byte, 1024),
+		}
+	},
+}
+
 func (l *Logger) doPrintln(ctx Context, msg string) {
 	// TODO: make functions meta a optional argument
 	// fields.File, fields.Func, fields.Line = getFuncInfo(l.CallPath)
 
-	var buf = []byte{}
-	buf = append(buf, getTimestamp()...)
-	buf = append(buf, " ["...)
-	buf = append(buf, l.LevelStr...)
-	buf = append(buf, "] "...)
-	buf = append(buf, msg...)
-	buf = append(buf, '\n')
+	e := lepool.Get().(*LogEntry)
+	defer lepool.Put(e)
 
-	_, _ = l.Writer.Write(buf)
+	e.buf = append(e.buf, getTimestamp()...)
+	e.buf = append(e.buf, " ["...)
+	e.buf = append(e.buf, l.LevelStr...)
+	e.buf = append(e.buf, "] "...)
+	e.buf = append(e.buf, msg...)
+	e.buf = append(e.buf, '\n')
+
+	_, _ = l.Writer.Write(e.buf)
 }
 
 func (l *Logger) println(ctx Context, msg string) {
