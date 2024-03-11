@@ -105,11 +105,12 @@ func (l *Logger) SetCallPath(callPath int) {
 	l.CallPath = callPath
 }
 
-func (l *Logger) doPrint(level int, ctx Context, format string, v ...interface{}) {
+func (l *Logger) doPrint(format string, v ...interface{}) {
 	e := l.NewLogEntry()
 	defer l.ReleaseLogEntry(e)
 	e.BufClr()
 
+	e.SetTimestamp()
 	e.SetLevel(l.LevelStr)
 	msg := formattedMessage(format, v...)
 	e.SetMsg(msg)
@@ -125,6 +126,7 @@ func (l *Logger) doPrintln(msg string) {
 	defer l.ReleaseLogEntry(e)
 	e.BufClr()
 
+	e.SetTimestamp()
 	e.SetLevel(l.LevelStr)
 	e.SetMsg(msg)
 	e.buf = append(e.buf, '\n')
@@ -150,9 +152,9 @@ func (l *Logger) println(msg string) {
 
 func (l *Logger) printf(level int, ctx Context, format string, v ...interface{}) {
 	if l.Async {
-		go l.doPrint(level, ctx, "", v...)
+		go l.doPrint("", v...)
 	} else {
-		l.doPrint(level, ctx, format, v...)
+		l.doPrint(format, v...)
 	}
 }
 
