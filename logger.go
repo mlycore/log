@@ -28,8 +28,7 @@ type Logger struct {
 
 	mu        sync.Mutex
 	formatter Formatter
-	//TODO: remove this later
-	// entries   sync.Pool
+	epool     sync.Pool
 
 	Level int
 	// TODO: remove this later
@@ -125,21 +124,23 @@ func (l *Logger) doPrintln(msg string) {
 	// TODO: make functions meta a optional argument
 	// fields.File, fields.Func, fields.Line = getFuncInfo(l.CallPath)
 
-	e := epool.Get().(*LogEntry)
-	defer epool.Put(e)
-	// e.buf = e.buf[:0]
+	e := l.NewLogEntry()
+	defer l.ReleaseLogEntry(e)
 	e.BufClr()
 
-	// e.timestamp()
-	// e.buf = append(e.buf, '[')
-	// e.buf = append(e.buf, l.LevelStr...)
-	// e.buf = append(e.buf, ']')
-	// e.buf = append(e.buf, msg...)
 	e.SetLevel(l.LevelStr)
 	e.SetMsg(msg)
 	e.buf = append(e.buf, '\n')
 
 	_, _ = l.Writer.Write(e.buf)
+}
+
+func (l *Logger) NewLogEntry() *LogEntry {
+	return l.epool.Get().(*LogEntry)
+}
+
+func (l *Logger) ReleaseLogEntry(e *LogEntry) {
+	l.epool.Put(e)
 }
 
 func (l *Logger) println(msg string) {
@@ -162,77 +163,77 @@ type Context map[string]string
 
 // Traceln print trace level logs in a line
 func (l *Logger) Traceln(msg string) {
-	if LogLevelTrace >= logger.Level {
+	if LogLevelTrace >= l.Level {
 		l.println(msg)
 	}
 }
 
 // Tracef print trace level logs in a specific format
 func (l *Logger) Tracef(format string, v ...interface{}) {
-	if LogLevelTrace >= logger.Level {
+	if LogLevelTrace >= l.Level {
 		l.printf(logger.Level, Context{}, format, v...)
 	}
 }
 
 // Debugln print debug level logs in a line
 func (l *Logger) Debugln(msg string) {
-	if LogLevelDebug >= logger.Level {
+	if LogLevelDebug >= l.Level {
 		l.println(msg)
 	}
 }
 
 // Debugf print debug level logs in a specific format
 func (l *Logger) Debugf(format string, v ...interface{}) {
-	if LogLevelDebug >= logger.Level {
+	if LogLevelDebug >= l.Level {
 		l.printf(logger.Level, Context{}, format, v...)
 	}
 }
 
 // Infoln print info level logs in a line
 func (l *Logger) Infoln(msg string) {
-	if LogLevelInfo >= logger.Level {
+	if LogLevelInfo >= l.Level {
 		l.println(msg)
 	}
 }
 
 // Infof print info level logs in a specific format
 func (l *Logger) Infof(format string, v ...interface{}) {
-	if LogLevelInfo >= logger.Level {
+	if LogLevelInfo >= l.Level {
 		l.printf(logger.Level, Context{}, format, v...)
 	}
 }
 
 // Warnln print warn level logs in a line
 func (l *Logger) Warnln(msg string) {
-	if LogLevelWarn >= logger.Level {
+	if LogLevelWarn >= l.Level {
 		l.println(msg)
 	}
 }
 
 // Warnf print warn level logs in a specific format
 func (l *Logger) Warnf(format string, v ...interface{}) {
-	if LogLevelWarn >= logger.Level {
+	if LogLevelWarn >= l.Level {
 		l.printf(logger.Level, Context{}, format, v...)
 	}
 }
 
 // Errorln print error level logs in a line
 func (l *Logger) Errorln(msg string) {
-	if LogLevelError >= logger.Level {
+	if LogLevelError >= l.Level {
 		l.println(msg)
 	}
 }
 
 // Errorf print error level logs in a specific format
 func (l *Logger) Errorf(format string, v ...interface{}) {
-	if LogLevelError >= logger.Level {
+	if LogLevelError >= l.Level {
 		l.printf(logger.Level, Context{}, format, v...)
 	}
 }
 
 // Fatalln print fatal level logs in a line
 func (l *Logger) Fatalln(msg string) {
-	if LogLevelFatal >= logger.Level {
+	if LogLevelFatal >= l.Level {
 		l.println(msg)
 		os.Exit(1)
 	}
@@ -240,7 +241,7 @@ func (l *Logger) Fatalln(msg string) {
 
 // Fatalf print fatal level logs in a specific format
 func (l *Logger) Fatalf(format string, v ...interface{}) {
-	if LogLevelFatal >= logger.Level {
+	if LogLevelFatal >= l.Level {
 		l.printf(logger.Level, Context{}, format, v...)
 		os.Exit(1)
 	}
