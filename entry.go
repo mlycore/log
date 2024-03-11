@@ -29,7 +29,7 @@ var epool = sync.Pool{
 }
 
 func (e *LogEntry) timestamp() {
-	tm(e.buf)
+	appendtime(e.buf)
 }
 
 func (e *LogEntry) SetMsg(msg string) {
