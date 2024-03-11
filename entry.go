@@ -33,9 +33,9 @@ func (e *LogEntry) SetMsg(msg string) {
 }
 
 func (e *LogEntry) SetLevel(lv string) {
-	e.buf = append(e.buf, '[')
+	e.buf = append(e.buf, " ["...)
 	e.buf = append(e.buf, lv...)
-	e.buf = append(e.buf, ']')
+	e.buf = append(e.buf, "] "...)
 }
 
 func (e *LogEntry) BufClr() {
