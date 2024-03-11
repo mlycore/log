@@ -106,9 +106,12 @@ func SetFormatter(f Formatter) {
 	//f.SetColor()
 }
 
+// TODO: need refactor
+/*
 func SetContext(ctx Context) *Entry {
 	return logger.SetContext(ctx)
 }
+*/
 
 // LoggerIface defines a general behavior of this logger
 /*
