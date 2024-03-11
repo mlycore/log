@@ -171,7 +171,7 @@ func (l *Logger) Traceln(msg string) {
 // Tracef print trace level logs in a specific format
 func (l *Logger) Tracef(format string, v ...interface{}) {
 	if LogLevelTrace >= l.Level {
-		l.printf(logger.Level, Context{}, format, v...)
+		l.printf(l.Level, Context{}, format, v...)
 	}
 }
 
@@ -185,7 +185,7 @@ func (l *Logger) Debugln(msg string) {
 // Debugf print debug level logs in a specific format
 func (l *Logger) Debugf(format string, v ...interface{}) {
 	if LogLevelDebug >= l.Level {
-		l.printf(logger.Level, Context{}, format, v...)
+		l.printf(l.Level, Context{}, format, v...)
 	}
 }
 
@@ -199,7 +199,7 @@ func (l *Logger) Infoln(msg string) {
 // Infof print info level logs in a specific format
 func (l *Logger) Infof(format string, v ...interface{}) {
 	if LogLevelInfo >= l.Level {
-		l.printf(logger.Level, Context{}, format, v...)
+		l.printf(l.Level, Context{}, format, v...)
 	}
 }
 
@@ -213,7 +213,7 @@ func (l *Logger) Warnln(msg string) {
 // Warnf print warn level logs in a specific format
 func (l *Logger) Warnf(format string, v ...interface{}) {
 	if LogLevelWarn >= l.Level {
-		l.printf(logger.Level, Context{}, format, v...)
+		l.printf(l.Level, Context{}, format, v...)
 	}
 }
 
@@ -227,7 +227,7 @@ func (l *Logger) Errorln(msg string) {
 // Errorf print error level logs in a specific format
 func (l *Logger) Errorf(format string, v ...interface{}) {
 	if LogLevelError >= l.Level {
-		l.printf(logger.Level, Context{}, format, v...)
+		l.printf(l.Level, Context{}, format, v...)
 	}
 }
 
@@ -242,7 +242,7 @@ func (l *Logger) Fatalln(msg string) {
 // Fatalf print fatal level logs in a specific format
 func (l *Logger) Fatalf(format string, v ...interface{}) {
 	if LogLevelFatal >= l.Level {
-		l.printf(logger.Level, Context{}, format, v...)
+		l.printf(l.Level, Context{}, format, v...)
 		os.Exit(1)
 	}
 }
