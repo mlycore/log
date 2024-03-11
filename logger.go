@@ -152,9 +152,9 @@ func (l *Logger) println(msg string) {
 
 func (l *Logger) printf(level int, ctx Context, format string, v ...interface{}) {
 	if l.Async {
-		go l.doPrint(level, ctx, "", v...)
+		go l.doPrint("", v...)
 	} else {
-		l.doPrint(level, ctx, format, v...)
+		l.doPrint(format, v...)
 	}
 }
 
