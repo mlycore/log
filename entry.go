@@ -28,7 +28,7 @@ var epool = sync.Pool{
 	},
 }
 
-func (e *LogEntry) timestamp() {
+func (e *LogEntry) SetTimestamp() {
 	appendtime(e.buf)
 }
 
