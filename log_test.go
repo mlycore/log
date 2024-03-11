@@ -39,23 +39,23 @@ func Test_Log(t *testing.T) {
 	logger.SetLevelByName("ERROR")
 	printall(logger.Level)
 
-	logger.SetLevelByName("FATAL")
-	printall(logger.Level)
+	// logger.SetLevelByName("FATAL")
+	// printall(logger.Level)
 }
 
 func printall(level int) {
 	l := LogLevelMap[level]
 	str := fmt.Sprintf("this is level %s", l)
 	Traceln("traceln: " + str)
-	Tracef("tracef: %s", str)
+	Tracef("tracef: %s\n", str)
 	Debugln("debugln: " + str)
-	Debugf("debugf: %s", str)
+	Debugf("debugf: %s\n", str)
 	Infoln("infoln: " + str)
-	Infof("infof: %s", str)
+	Infof("infof: %s\n", str)
 	Warnln("warnln: " + str)
-	Warnf("warnf: %s", str)
+	Warnf("warnf: %s\n", str)
 	Errorln("errorln: " + str)
-	Errorf("errorf: %s", str)
+	Errorf("errorf: %s\n", str)
 	//Fatalln("fatalln: " + str)
 	//Fatalf("fatalf: %s", str)
 }
