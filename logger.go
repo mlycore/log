@@ -105,7 +105,7 @@ func (l *Logger) SetCallPath(callPath int) {
 	l.CallPath = callPath
 }
 
-func (l *Logger) doPrint(level int, ctx Context, format string, v ...interface{}) {
+func (l *Logger) doPrint(format string, v ...interface{}) {
 	e := l.NewLogEntry()
 	defer l.ReleaseLogEntry(e)
 	e.BufClr()
