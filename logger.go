@@ -110,6 +110,7 @@ func (l *Logger) doPrint(format string, v ...interface{}) {
 	defer l.ReleaseLogEntry(e)
 	e.BufClr()
 
+	e.SetTimestamp()
 	e.SetLevel(l.LevelStr)
 	msg := formattedMessage(format, v...)
 	e.SetMsg(msg)
@@ -125,6 +126,7 @@ func (l *Logger) doPrintln(msg string) {
 	defer l.ReleaseLogEntry(e)
 	e.BufClr()
 
+	e.SetTimestamp()
 	e.SetLevel(l.LevelStr)
 	e.SetMsg(msg)
 	e.buf = append(e.buf, '\n')
