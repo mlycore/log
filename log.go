@@ -21,9 +21,11 @@ import (
 )
 
 func init() {
-	NewDefaultLogger()
-	SetFormatter(&TextFormatter{Color: false})
-	SetLevel(EnvLogLevelInfo)
+	/*
+		NewDefaultLogger()
+		SetFormatter(&TextFormatter{Color: false})
+		SetLevel(EnvLogLevelInfo)
+	*/
 	// SetSink(&StdioSink{})
 
 	//go logger.flushDaemon()
@@ -49,7 +51,7 @@ var (
 	once sync.Once
 	file *os.File
 
-	// LogLevelMap is log level map
+	// LogLevelMap is log level ma
 	LogLevelMap = map[int]string{
 		LogLevelUnspecified: "UNSPECIFIED",
 		LogLevelTrace:       "TRACE",
@@ -68,16 +70,15 @@ func NewDefaultLogger() {
 
 // NewLogger returns a instance of Logger
 func NewLogger(writer io.Writer, level, caller int) *Logger {
-	once.Do(func() {
-		logger = &Logger{
-			Writer:    writer,
-			Level:     level,
-			LevelStr:  getLogLevel(level),
-			CallPath:  caller,
-			formatter: &TextFormatter{},
-		}
-	})
-	return logger
+	return &Logger{
+		Writer:    writer,
+		Level:     level,
+		LevelStr:  getLogLevel(level),
+		CallPath:  caller,
+		formatter: &TextFormatter{Color: false},
+
+		epool: epool,
+	}
 }
 
 func SetDefaultLogFile() {
