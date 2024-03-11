@@ -16,7 +16,6 @@
 package log
 
 import (
-	"fmt"
 	"io"
 	"os"
 	"strings"
@@ -107,17 +106,15 @@ func (l *Logger) SetCallPath(callPath int) {
 }
 
 func (l *Logger) doPrint(level int, ctx Context, format string, v ...interface{}) {
-	fields := &Fields{
-		Timestamp: getTimestamp(),
-		Level:     getLogLevel(level),
-		Msg:       formattedMessage(format, v...),
-	}
+	e := l.NewLogEntry()
+	defer l.ReleaseLogEntry(e)
+	e.BufClr()
 
-	fields.File, fields.Func, fields.Line = getFuncInfo(l.CallPath)
+	e.SetLevel(l.LevelStr)
+	msg := formattedMessage(format, v...)
+	e.SetMsg(msg)
 
-	// this is core print functions
-	msg := l.formatter.Print(fields, ctx)
-	fmt.Fprintln(l.Writer, msg)
+	_, _ = l.Writer.Write(e.buf)
 }
 
 func (l *Logger) doPrintln(msg string) {
