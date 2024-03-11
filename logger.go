@@ -28,7 +28,8 @@ type Logger struct {
 
 	mu        sync.Mutex
 	formatter Formatter
-	entries   sync.Pool
+	//TODO: remove this later
+	// entries   sync.Pool
 
 	Level int
 	// TODO: remove this later
@@ -39,6 +40,7 @@ type Logger struct {
 	// Context  Context
 }
 
+/*
 func (l *Logger) newEntry() *Entry {
 	entry, ok := l.entries.Get().(*Entry)
 	if ok {
@@ -51,6 +53,7 @@ func (l *Logger) newEntry() *Entry {
 func (l *Logger) releaseEntry(e *Entry) {
 	l.entries.Put(e)
 }
+*/
 
 func (l *Logger) SetFormatter(f Formatter) *Logger {
 	l.formatter = f
@@ -62,12 +65,15 @@ func (l *Logger) EnableAsync() *Logger {
 	return l
 }
 
+// TODO: need refactor
+/*
 func (l *Logger) SetContext(ctx Context) *Entry {
 	// l.Context = ctx
 	entry := l.newEntry()
 	defer l.releaseEntry(entry)
 	return entry.WithContext(ctx)
 }
+*/
 
 // SetLevel set the level of log
 func (l *Logger) SetLevel(level int) {
@@ -115,32 +121,22 @@ func (l *Logger) doPrint(level int, ctx Context, format string, v ...interface{}
 	fmt.Fprintln(l.Writer, msg)
 }
 
-// TODO: need refactor wth entry.go
-type LogEntry struct {
-	buf []byte
-}
-
-var lepool = sync.Pool{
-	New: func() any {
-		return &LogEntry{
-			buf: make([]byte, 1024),
-		}
-	},
-}
-
 func (l *Logger) doPrintln(msg string) {
 	// TODO: make functions meta a optional argument
 	// fields.File, fields.Func, fields.Line = getFuncInfo(l.CallPath)
 
-	e := lepool.Get().(*LogEntry)
-	e.buf = e.buf[:0]
-	defer lepool.Put(e)
+	e := epool.Get().(*LogEntry)
+	defer epool.Put(e)
+	// e.buf = e.buf[:0]
+	e.BufClr()
 
-	e.timestamp()
-	e.buf = append(e.buf, '[')
-	e.buf = append(e.buf, l.LevelStr...)
-	e.buf = append(e.buf, ']')
-	e.buf = append(e.buf, msg...)
+	// e.timestamp()
+	// e.buf = append(e.buf, '[')
+	// e.buf = append(e.buf, l.LevelStr...)
+	// e.buf = append(e.buf, ']')
+	// e.buf = append(e.buf, msg...)
+	e.SetLevel(l.LevelStr)
+	e.SetMsg(msg)
 	e.buf = append(e.buf, '\n')
 
 	_, _ = l.Writer.Write(e.buf)

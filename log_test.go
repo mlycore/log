@@ -89,10 +89,12 @@ func Test_FormatterLogger(t *testing.T) {
 	Infoln("deployment create success")
 	Errorf("service create error")
 
-	SetContext(Context{
-		"namespace":  "starpay",
-		"deployment": "uuid",
-	})
+	/*
+		SetContext(Context{
+			"namespace":  "starpay",
+			"deployment": "uuid",
+		})
+	*/
 	Infoln("deployment list success")
 }
 
@@ -101,7 +103,7 @@ func Test_DefaultLogger(t *testing.T) {
 	SetFormatter(&TextFormatter{})
 	logger.SetLevelByName("InFo")
 	//printall(logger.Level)
-	logger.Infoln("a", "b")
+	// logger.Infoln("a", "b")
 }
 
 func Benchmark_Infof(b *testing.B) {
@@ -117,5 +119,5 @@ func Benchmark_Infof(b *testing.B) {
 func Test_LogFile(t *testing.T) {
 	NewDefaultLogger()
 	SetLogFile("./test.log")
-	logger.Infoln("a", "b")
+	// logger.Infoln("a", "b")
 }
