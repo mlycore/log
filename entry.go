@@ -20,6 +20,12 @@ import (
 
 type LogEntry struct {
 	buf []byte
+
+	color     bool
+	level     string
+	timestamp string
+	msg       string
+	newline   bool
 }
 
 var epool = sync.Pool{
@@ -30,18 +36,108 @@ var epool = sync.Pool{
 	},
 }
 
-func (e *LogEntry) SetMsg(msg string) {
-	e.buf = append(e.buf, msg...)
+func (e *LogEntry) SetColor(enabled bool) *LogEntry {
+	e.color = enabled
+	return e
 }
 
-func (e *LogEntry) SetLevel(lv string) {
-	e.buf = append(e.buf, " ["...)
-	e.buf = append(e.buf, lv...)
-	e.buf = append(e.buf, "] "...)
+// func (e *LogEntry) SetColor(enabled bool, op int) *LogEntry {
+// e.color = enabled
+// 	if e.color {
+// 		switch e.Level {
+// 		case EnvLogLevelError:
+// 			if op == 0 {
+// 				e.buf = append(e.buf, "\033[31m"...)
+// 			} else {
+// 				e.buf = append(e.buf, "\033[0m"...)
+// 			}
+// 		case EnvLogLevelDebug:
+// 			if op == 0 {
+// 				e.buf = append(e.buf, "\033[1;34m"...)
+// 			} else {
+// 				e.buf = append(e.buf, "\033[0m"...)
+// 			}
+// 		}
+// 	}
+// 	return e
+// }
+
+func (e *LogEntry) SetMsg(msg string) *LogEntry {
+	// e.buf = append(e.buf, msg...)
+	e.msg = msg
+	return e
 }
 
-func (e *LogEntry) BufClr() {
+func (e *LogEntry) SetLevel(lv string) *LogEntry {
+	e.level = lv
+	return e
+}
+
+func (e *LogEntry) Render() *LogEntry {
+	if e.color {
+		switch e.level {
+		case EnvLogLevelError:
+			e.buf = append(e.buf, "\033[31m"...)
+			e.buf = append(e.buf, e.timestamp...)
+			e.buf = append(e.buf, " ["...)
+			e.buf = append(e.buf, e.level...)
+			e.buf = append(e.buf, "] "...)
+			e.buf = append(e.buf, e.msg...)
+			e.buf = append(e.buf, "\033[0m"...)
+			if e.newline {
+				e.buf = append(e.buf, '\n')
+			}
+		case EnvLogLevelDebug:
+			e.buf = append(e.buf, "\033[1;34m"...)
+			e.buf = append(e.buf, e.timestamp...)
+			e.buf = append(e.buf, " ["...)
+			e.buf = append(e.buf, e.level...)
+			e.buf = append(e.buf, "] "...)
+			e.buf = append(e.buf, e.msg...)
+			e.buf = append(e.buf, "\033[0m"...)
+			if e.newline {
+				e.buf = append(e.buf, '\n')
+			}
+		default:
+			e.buf = append(e.buf, e.timestamp...)
+			e.buf = append(e.buf, " ["...)
+			e.buf = append(e.buf, e.level...)
+			e.buf = append(e.buf, "] "...)
+			e.buf = append(e.buf, e.msg...)
+			if e.newline {
+				e.buf = append(e.buf, '\n')
+			}
+		}
+	} else {
+		e.buf = append(e.buf, e.timestamp...)
+		e.buf = append(e.buf, " ["...)
+		e.buf = append(e.buf, e.level...)
+		e.buf = append(e.buf, "] "...)
+		e.buf = append(e.buf, e.msg...)
+		if e.newline {
+			e.buf = append(e.buf, '\n')
+		}
+	}
+	return e
+}
+
+func (e *LogEntry) Bytes() []byte {
+	return e.buf
+}
+
+func (e *LogEntry) SetNewline() *LogEntry {
+	e.newline = true
+	return e
+}
+
+func (e *LogEntry) BufClr() *LogEntry {
+	e.color = false
+	e.level = ""
+	e.msg = ""
+	e.newline = false
+	e.timestamp = ""
 	e.buf = e.buf[:0]
+	return e
 }
 
 // TODO: need refactor
