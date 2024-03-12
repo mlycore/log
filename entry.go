@@ -14,7 +14,9 @@
 
 package log
 
-import "sync"
+import (
+	"sync"
+)
 
 type LogEntry struct {
 	buf []byte
