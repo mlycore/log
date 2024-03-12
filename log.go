@@ -148,6 +148,10 @@ func Traceln(msg string) {
 	logger.Traceln(msg)
 }
 
+func traceln(v ...any) {
+	logger.traceln(v)
+}
+
 // Tracef print trace level logs in a specific format
 func Tracef(format string, v ...interface{}) {
 	logger.Tracef(format, v...)
@@ -156,6 +160,9 @@ func Tracef(format string, v ...interface{}) {
 // Debugln print debug level logs in a line
 func Debugln(msg string) {
 	logger.Debugln(msg)
+}
+func debugln(v ...any) {
+	logger.debugln(v)
 }
 
 // Debugf print debug level logs in a specific format
@@ -168,6 +175,10 @@ func Infoln(msg string) {
 	logger.Infoln(msg)
 }
 
+func infoln(v ...any) {
+	logger.infoln(v)
+}
+
 // Infof print info level logs in a specific format
 func Infof(format string, v ...interface{}) {
 	logger.Infof(format, v...)
@@ -176,6 +187,10 @@ func Infof(format string, v ...interface{}) {
 // Warnln print warn level logs in a line
 func Warnln(msg string) {
 	logger.Warnln(msg)
+}
+
+func warnln(v ...any) {
+	logger.warnln(v)
 }
 
 // Warnf print warn level logs in a specific format
@@ -188,6 +203,10 @@ func Errorln(msg string) {
 	logger.Errorln(msg)
 }
 
+func errorln(v ...any) {
+	logger.errorln(v)
+}
+
 // Errorf print error level logs in a specific format
 func Errorf(format string, v ...interface{}) {
 	logger.Errorf(format, v...)
@@ -196,6 +215,10 @@ func Errorf(format string, v ...interface{}) {
 // Fatalln print fatal level logs in a line
 func Fatalln(msg string) {
 	logger.Fatalln(msg)
+}
+
+func fatalln(v ...any) {
+	logger.fatalln(v)
 }
 
 // Fatalf print fatal level logs in a specific format
