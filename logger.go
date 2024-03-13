@@ -34,24 +34,15 @@ type Logger struct {
 	LevelStr string
 	CallPath int
 	Async    bool
+	Color    bool
 	// Sink     Sink
 	// Context  Context
 }
 
-/*
-func (l *Logger) newEntry() *Entry {
-	entry, ok := l.entries.Get().(*Entry)
-	if ok {
-		return entry
-	}
-
-	return NewEntry()
+func (l *Logger) SetColor(enabled bool) *Logger {
+	l.Color = enabled
+	return l
 }
-
-func (l *Logger) releaseEntry(e *Entry) {
-	l.entries.Put(e)
-}
-*/
 
 func (l *Logger) SetFormatter(f Formatter) *Logger {
 	l.formatter = f
@@ -107,7 +98,7 @@ func (l *Logger) SetCallPath(callPath int) {
 
 func (l *Logger) doPrint(format string, v ...interface{}) {
 	e := l.NewLogEntry()
-	defer l.ReleaseLogEntry(e)
+	defer l.PutLogEntry(e)
 	e.BufClr()
 
 	e.SetTimestamp()
@@ -123,12 +114,15 @@ func (l *Logger) doPrintln(msg string) {
 	// fields.File, fields.Func, fields.Line = getFuncInfo(l.CallPath)
 
 	e := l.NewLogEntry()
-	defer l.ReleaseLogEntry(e)
+	defer l.PutLogEntry(e)
 	e.BufClr()
 
+	// e.SetColor(l.Color, 0)
 	e.SetTimestamp()
 	e.SetLevel(l.LevelStr)
 	e.SetMsg(msg)
+	// e.SetColor(l.Color, 1)
+
 	e.buf = append(e.buf, '\n')
 
 	_, _ = l.Writer.Write(e.buf)
@@ -139,7 +133,7 @@ func (l *Logger) doPrintln0(v ...any) {
 	// fields.File, fields.Func, fields.Line = getFuncInfo(l.CallPath)
 
 	e := l.NewLogEntry()
-	defer l.ReleaseLogEntry(e)
+	defer l.PutLogEntry(e)
 	e.BufClr()
 
 	e.SetTimestamp()
@@ -153,7 +147,11 @@ func (l *Logger) NewLogEntry() *LogEntry {
 	return l.epool.Get().(*LogEntry)
 }
 
-func (l *Logger) ReleaseLogEntry(e *LogEntry) {
+func (l *Logger) GetLogEntry() *LogEntry {
+	return l.epool.Get().(*LogEntry)
+}
+
+func (l *Logger) PutLogEntry(e *LogEntry) {
 	l.epool.Put(e)
 }
 
@@ -186,7 +184,9 @@ type Context map[string]string
 // Traceln print trace level logs in a line
 func (l *Logger) Traceln(msg string) {
 	if LogLevelTrace >= l.Level {
-		l.println(msg)
+		e := l.GetLogEntry().BufClr().SetColor(l.Color).SetTimestamp().SetLevel(EnvLogLevelTrace).SetMsg(msg).SetNewline().Render()
+		defer l.PutLogEntry(e)
+		_, _ = l.Writer.Write(e.Bytes())
 	}
 }
 
@@ -206,7 +206,9 @@ func (l *Logger) Tracef(format string, v ...interface{}) {
 // Debugln print debug level logs in a line
 func (l *Logger) Debugln(msg string) {
 	if LogLevelDebug >= l.Level {
-		l.println(msg)
+		e := l.GetLogEntry().BufClr().SetColor(l.Color).SetTimestamp().SetLevel(EnvLogLevelDebug).SetMsg(msg).SetNewline().Render()
+		defer l.PutLogEntry(e)
+		_, _ = l.Writer.Write(e.Bytes())
 	}
 }
 
@@ -226,7 +228,9 @@ func (l *Logger) Debugf(format string, v ...interface{}) {
 // Infoln print info level logs in a line
 func (l *Logger) Infoln(msg string) {
 	if LogLevelInfo >= l.Level {
-		l.println(msg)
+		e := l.GetLogEntry().BufClr().SetColor(l.Color).SetTimestamp().SetLevel(EnvLogLevelInfo).SetMsg(msg).SetNewline().Render()
+		defer l.PutLogEntry(e)
+		_, _ = l.Writer.Write(e.Bytes())
 	}
 }
 
@@ -246,7 +250,9 @@ func (l *Logger) Infof(format string, v ...interface{}) {
 // Warnln print warn level logs in a line
 func (l *Logger) Warnln(msg string) {
 	if LogLevelWarn >= l.Level {
-		l.println(msg)
+		e := l.GetLogEntry().BufClr().SetColor(l.Color).SetTimestamp().SetLevel(EnvLogLevelWarn).SetMsg(msg).SetNewline().Render()
+		defer l.PutLogEntry(e)
+		_, _ = l.Writer.Write(e.Bytes())
 	}
 }
 
@@ -266,7 +272,9 @@ func (l *Logger) Warnf(format string, v ...interface{}) {
 // Errorln print error level logs in a line
 func (l *Logger) Errorln(msg string) {
 	if LogLevelError >= l.Level {
-		l.println(msg)
+		e := l.GetLogEntry().BufClr().SetColor(l.Color).SetTimestamp().SetLevel(EnvLogLevelError).SetMsg(msg).SetNewline().Render()
+		defer l.PutLogEntry(e)
+		_, _ = l.Writer.Write(e.Bytes())
 	}
 }
 
@@ -286,7 +294,9 @@ func (l *Logger) Errorf(format string, v ...interface{}) {
 // Fatalln print fatal level logs in a line
 func (l *Logger) Fatalln(msg string) {
 	if LogLevelFatal >= l.Level {
-		l.println(msg)
+		e := l.GetLogEntry().BufClr().SetColor(l.Color).SetTimestamp().SetLevel(EnvLogLevelFatal).SetMsg(msg).SetNewline().Render()
+		defer l.PutLogEntry(e)
+		_, _ = l.Writer.Write(e.Bytes())
 		os.Exit(1)
 	}
 }

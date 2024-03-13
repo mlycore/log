@@ -21,9 +21,26 @@ import (
 	"testing"
 )
 
+func Test_Log0(t *testing.T) {
+	tl := NewLogger(os.Stdout, LogLevelInfo, 0)
+	tl.SetColor(true)
+
+	logger = tl
+	logger.SetLevelByName("DEBUG")
+	logger.Infoln("this should be non-colored")
+	logger.Debugln("this should be blue")
+	logger.Errorln("this should be red")
+}
+
 func Test_Log(t *testing.T) {
-	NewDefaultLogger()
-	SetFormatter(&TextFormatter{Color: false})
+	// NewDefaultLogger()
+	// SetFormatter(&TextFormatter{Color: false})
+	tl := NewLogger(os.Stdout, LogLevelInfo, 0)
+	tl.SetColor(true)
+
+	// set global variable logger
+	logger = tl
+
 	logger.SetLevelByName("TRACE")
 	printall(logger.Level)
 
@@ -45,17 +62,22 @@ func Test_Log(t *testing.T) {
 
 func printall(level int) {
 	l := LogLevelMap[level]
-	str := fmt.Sprintf("this is level %s", l)
+	str := fmt.Sprintf("current level is %s", l)
 	Traceln("traceln: " + str)
 	Tracef("tracef: %s\n", str)
+
 	Debugln("debugln: " + str)
 	Debugf("debugf: %s\n", str)
+
 	Infoln("infoln: " + str)
 	Infof("infof: %s\n", str)
+
 	Warnln("warnln: " + str)
 	Warnf("warnf: %s\n", str)
+
 	Errorln("errorln: " + str)
 	Errorf("errorf: %s\n", str)
+
 	//Fatalln("fatalln: " + str)
 	//Fatalf("fatalf: %s", str)
 }

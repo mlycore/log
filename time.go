@@ -27,7 +27,7 @@ const (
 )
 
 // get timestamp without location
-func (e *LogEntry) SetTimestamp() {
+func (e *LogEntry) SetTimestamp() *LogEntry {
 	// 2024-03-08T16:30:00Z
 	var tmp [20]byte
 
@@ -90,8 +90,8 @@ func (e *LogEntry) SetTimestamp() {
 	tmp[19] = sepZ
 
 	stmp := tmp[:20]
-	// buf = append(buf, stmp...)
-	e.buf = append(e.buf, stmp...)
+	e.timestamp = append(e.timestamp, stmp...)
+	return e
 }
 
 // fast conversion from int to alphabet
