@@ -23,7 +23,7 @@ type LogEntry struct {
 
 	color     bool
 	level     string
-	timestamp string
+	timestamp []byte
 	msg       string
 	newline   bool
 }
@@ -135,7 +135,7 @@ func (e *LogEntry) BufClr() *LogEntry {
 	e.level = ""
 	e.msg = ""
 	e.newline = false
-	e.timestamp = ""
+	e.timestamp = e.timestamp[:0]
 	e.buf = e.buf[:0]
 	return e
 }
