@@ -26,6 +26,8 @@ type LogEntry struct {
 	timestamp []byte
 	msg       string
 	newline   bool
+
+	context Context
 }
 
 var epool = sync.Pool{
@@ -118,10 +120,9 @@ func (e *LogEntry) reset() *LogEntry {
 	return e
 }
 
-/*
-// TODO: need refactor
-func (e *Entry) WithContext(ctx Context) *Entry {
-	e.Context = ctx
+type Context map[string]string
+
+func (e *LogEntry) WithContext(ctx Context) *LogEntry {
+	e.context = ctx
 	return e
 }
-*/

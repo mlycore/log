@@ -36,7 +36,6 @@ type Logger struct {
 	Async    bool
 	Color    bool
 	// Sink     Sink
-	// Context  Context
 }
 
 func (l *Logger) SetColor(enabled bool) *Logger {
@@ -53,16 +52,6 @@ func (l *Logger) EnableAsync() *Logger {
 	l.Async = true
 	return l
 }
-
-// TODO: need refactor
-/*
-func (l *Logger) SetContext(ctx Context) *Entry {
-	// l.Context = ctx
-	entry := l.newEntry()
-	defer l.releaseEntry(entry)
-	return entry.WithContext(ctx)
-}
-*/
 
 // SetLevel set the level of log
 func (l *Logger) SetLevel(level int) {
@@ -179,8 +168,6 @@ func (l *Logger) printf(format string, v ...interface{}) {
 		l.doPrint(format, v...)
 	}
 }
-
-type Context map[string]string
 
 // Traceln print trace level logs in a line
 func (l *Logger) Traceln(msg string) {
