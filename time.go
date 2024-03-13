@@ -90,9 +90,7 @@ func (e *LogEntry) SetTimestamp() *LogEntry {
 	tmp[19] = sepZ
 
 	stmp := tmp[:20]
-	// buf = append(buf, stmp...)
-	e.buf = append(e.buf, stmp...)
-	// e.timestamp = string(stmp)
+	e.timestamp = append(e.timestamp, stmp...)
 	return e
 }
 
