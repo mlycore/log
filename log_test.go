@@ -27,6 +27,7 @@ func Test_Log0(t *testing.T) {
 
 	logger = tl
 	logger.SetLevelByName("DEBUG")
+	logger.Infoln("this should be non-colored")
 	logger.Debugln("this should be blue")
 	logger.Errorln("this should be red")
 }
