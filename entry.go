@@ -55,45 +55,56 @@ func (e *LogEntry) SetLevel(lv string) *LogEntry {
 
 func (e *LogEntry) Render() *LogEntry {
 	if e.color {
-		switch e.level {
-		case EnvLogLevelError:
-			e.buf = append(e.buf, "\033[31m"...)
-			e.buf = append(e.buf, e.timestamp...)
-			e.buf = append(e.buf, " ["...)
-			e.buf = append(e.buf, e.level...)
-			e.buf = append(e.buf, "] "...)
-			e.buf = append(e.buf, e.msg...)
-			e.buf = append(e.buf, "\033[0m"...)
-			if e.newline {
-				e.buf = append(e.buf, '\n')
-			}
-		case EnvLogLevelDebug:
-			e.buf = append(e.buf, "\033[1;34m"...)
-			e.buf = append(e.buf, e.timestamp...)
-			e.buf = append(e.buf, " ["...)
-			e.buf = append(e.buf, e.level...)
-			e.buf = append(e.buf, "] "...)
-			e.buf = append(e.buf, e.msg...)
-			e.buf = append(e.buf, "\033[0m"...)
-			if e.newline {
-				e.buf = append(e.buf, '\n')
-			}
-		default:
-			e.buf = append(e.buf, e.timestamp...)
-			e.buf = append(e.buf, " ["...)
-			e.buf = append(e.buf, e.level...)
-			e.buf = append(e.buf, "] "...)
-			e.buf = append(e.buf, e.msg...)
-			if e.newline {
-				e.buf = append(e.buf, '\n')
-			}
-		}
+		e.colorize()
 	} else {
-		e.buf = append(e.buf, e.timestamp...)
-		e.buf = append(e.buf, " ["...)
-		e.buf = append(e.buf, e.level...)
-		e.buf = append(e.buf, "] "...)
-		e.buf = append(e.buf, e.msg...)
+		e.render()
+		if e.newline {
+			e.buf = append(e.buf, '\n')
+		}
+	}
+	return e
+}
+
+func (e *LogEntry) render() *LogEntry {
+	e.buf = append(e.buf, e.timestamp...)
+	e.buf = append(e.buf, " ["...)
+	e.buf = append(e.buf, e.level...)
+	e.buf = append(e.buf, "] "...)
+	e.buf = append(e.buf, e.msg...)
+	return e
+}
+
+type palette []string
+
+func (p palette) pair() (string, string) {
+	return p[0], p[1]
+}
+
+var (
+	blue palette = []string{"\033[31m", "\033[0m"}
+	red  palette = []string{"\033[1;34m", "\033[0m"}
+)
+
+func (e *LogEntry) colorize() *LogEntry {
+	switch e.level {
+	case EnvLogLevelError:
+		prefix, suffix := blue.pair()
+		e.buf = append(e.buf, prefix...)
+		e.render()
+		e.buf = append(e.buf, suffix...)
+		if e.newline {
+			e.buf = append(e.buf, '\n')
+		}
+	case EnvLogLevelDebug:
+		prefix, suffix := red.pair()
+		e.buf = append(e.buf, prefix...)
+		e.render()
+		e.buf = append(e.buf, suffix...)
+		if e.newline {
+			e.buf = append(e.buf, '\n')
+		}
+	default:
+		e.render()
 		if e.newline {
 			e.buf = append(e.buf, '\n')
 		}
