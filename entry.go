@@ -26,6 +26,8 @@ type LogEntry struct {
 	timestamp []byte
 	msg       string
 	newline   bool
+
+	context Context
 }
 
 var epool = sync.Pool{
@@ -41,29 +43,7 @@ func (e *LogEntry) SetColor(enabled bool) *LogEntry {
 	return e
 }
 
-// func (e *LogEntry) SetColor(enabled bool, op int) *LogEntry {
-// e.color = enabled
-// 	if e.color {
-// 		switch e.Level {
-// 		case EnvLogLevelError:
-// 			if op == 0 {
-// 				e.buf = append(e.buf, "\033[31m"...)
-// 			} else {
-// 				e.buf = append(e.buf, "\033[0m"...)
-// 			}
-// 		case EnvLogLevelDebug:
-// 			if op == 0 {
-// 				e.buf = append(e.buf, "\033[1;34m"...)
-// 			} else {
-// 				e.buf = append(e.buf, "\033[0m"...)
-// 			}
-// 		}
-// 	}
-// 	return e
-// }
-
 func (e *LogEntry) SetMsg(msg string) *LogEntry {
-	// e.buf = append(e.buf, msg...)
 	e.msg = msg
 	return e
 }
@@ -140,24 +120,9 @@ func (e *LogEntry) reset() *LogEntry {
 	return e
 }
 
-// TODO: need refactor
-/*
-type Entry struct {
-	logger *Logger
+type Context map[string]string
 
-	// Ctx context.Context
-	Context Context
-}
-
-func NewEntry() *Entry {
-	return &Entry{
-		logger:  logger,
-		Context: Context{},
-	}
-}
-
-func (e *Entry) WithContext(ctx Context) *Entry {
-	e.Context = ctx
+func (e *LogEntry) WithContext(ctx Context) *LogEntry {
+	e.context = ctx
 	return e
 }
-*/

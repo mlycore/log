@@ -24,7 +24,7 @@ import (
 // * TextFormatter, print as "deployment=kubestar namespace=default msg=deployment not found"
 // * JSONFormatter, print as "{"deployment": "kubestar", "namespace": "default", "msg": "deployment not found"}"
 type Formatter interface {
-	Print(fields *Fields, ctx Context) string
+	Print(ctx Context, fields *Fields) string
 	SetColor(color bool)
 }
 
@@ -36,10 +36,11 @@ func (t *JSONFormatter) SetColor(color bool) {
 	t.Color = color
 }
 
-func (t *JSONFormatter) Print(fields *Fields, ctx Context) string {
+func (t *JSONFormatter) Print(ctx Context, fields *Fields) string {
 	if ctx == nil {
 		ctx = make(map[string]string)
 	}
+
 	ctx["msg"] = fields.Msg
 
 	fields.Context = ctx
@@ -59,7 +60,7 @@ func (t *TextFormatter) SetColor(color bool) {
 	t.Color = color
 }
 
-func (t *TextFormatter) Print(fields *Fields, ctx Context) string {
+func (t *TextFormatter) Print(ctx Context, fields *Fields) string {
 	if ctx == nil {
 		ctx = make(map[string]string)
 	}
