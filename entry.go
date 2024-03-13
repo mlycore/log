@@ -58,9 +58,9 @@ func (e *LogEntry) Render() *LogEntry {
 		e.colorize()
 	} else {
 		e.render()
-		if e.newline {
-			e.buf = append(e.buf, '\n')
-		}
+	}
+	if e.newline {
+		e.buf = append(e.buf, '\n')
 	}
 	return e
 }
@@ -85,29 +85,22 @@ var (
 	red  palette = []string{"\033[1;34m", "\033[0m"}
 )
 
+func (e *LogEntry) renderc(color palette) *LogEntry {
+	prefix, suffix := color.pair()
+	e.buf = append(e.buf, prefix...)
+	e.render()
+	e.buf = append(e.buf, suffix...)
+	return e
+}
+
 func (e *LogEntry) colorize() *LogEntry {
 	switch e.level {
 	case EnvLogLevelError:
-		prefix, suffix := blue.pair()
-		e.buf = append(e.buf, prefix...)
-		e.render()
-		e.buf = append(e.buf, suffix...)
-		if e.newline {
-			e.buf = append(e.buf, '\n')
-		}
+		e.renderc(blue)
 	case EnvLogLevelDebug:
-		prefix, suffix := red.pair()
-		e.buf = append(e.buf, prefix...)
-		e.render()
-		e.buf = append(e.buf, suffix...)
-		if e.newline {
-			e.buf = append(e.buf, '\n')
-		}
+		e.renderc(red)
 	default:
 		e.render()
-		if e.newline {
-			e.buf = append(e.buf, '\n')
-		}
 	}
 	return e
 }
