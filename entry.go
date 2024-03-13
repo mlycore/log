@@ -130,7 +130,7 @@ func (e *LogEntry) SetNewline() *LogEntry {
 	return e
 }
 
-func (e *LogEntry) BufClr() *LogEntry {
+func (e *LogEntry) reset() *LogEntry {
 	e.color = false
 	e.level = ""
 	e.msg = ""

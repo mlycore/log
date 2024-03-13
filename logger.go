@@ -99,7 +99,7 @@ func (l *Logger) SetCallPath(callPath int) {
 func (l *Logger) doPrint(format string, v ...interface{}) {
 	e := l.NewLogEntry()
 	defer l.PutLogEntry(e)
-	e.BufClr()
+	e.reset()
 
 	e.SetTimestamp()
 	e.SetLevel(l.LevelStr)
@@ -115,7 +115,7 @@ func (l *Logger) doPrintln(msg string) {
 
 	e := l.NewLogEntry()
 	defer l.PutLogEntry(e)
-	e.BufClr()
+	e.reset()
 
 	// e.SetColor(l.Color, 0)
 	e.SetTimestamp()
@@ -134,7 +134,7 @@ func (l *Logger) doPrintln0(v ...any) {
 
 	e := l.NewLogEntry()
 	defer l.PutLogEntry(e)
-	e.BufClr()
+	e.reset()
 
 	e.SetTimestamp()
 	e.SetLevel(l.LevelStr)
@@ -152,6 +152,7 @@ func (l *Logger) GetLogEntry() *LogEntry {
 }
 
 func (l *Logger) PutLogEntry(e *LogEntry) {
+	e.reset()
 	l.epool.Put(e)
 }
 
@@ -184,7 +185,7 @@ type Context map[string]string
 // Traceln print trace level logs in a line
 func (l *Logger) Traceln(msg string) {
 	if LogLevelTrace >= l.Level {
-		e := l.GetLogEntry().BufClr().SetColor(l.Color).SetTimestamp().SetLevel(EnvLogLevelTrace).SetMsg(msg).SetNewline().Render()
+		e := l.GetLogEntry().SetColor(l.Color).SetTimestamp().SetLevel(EnvLogLevelTrace).SetMsg(msg).SetNewline().Render()
 		defer l.PutLogEntry(e)
 		_, _ = l.Writer.Write(e.Bytes())
 	}
@@ -206,7 +207,7 @@ func (l *Logger) Tracef(format string, v ...interface{}) {
 // Debugln print debug level logs in a line
 func (l *Logger) Debugln(msg string) {
 	if LogLevelDebug >= l.Level {
-		e := l.GetLogEntry().BufClr().SetColor(l.Color).SetTimestamp().SetLevel(EnvLogLevelDebug).SetMsg(msg).SetNewline().Render()
+		e := l.GetLogEntry().SetColor(l.Color).SetTimestamp().SetLevel(EnvLogLevelDebug).SetMsg(msg).SetNewline().Render()
 		defer l.PutLogEntry(e)
 		_, _ = l.Writer.Write(e.Bytes())
 	}
@@ -228,7 +229,7 @@ func (l *Logger) Debugf(format string, v ...interface{}) {
 // Infoln print info level logs in a line
 func (l *Logger) Infoln(msg string) {
 	if LogLevelInfo >= l.Level {
-		e := l.GetLogEntry().BufClr().SetColor(l.Color).SetTimestamp().SetLevel(EnvLogLevelInfo).SetMsg(msg).SetNewline().Render()
+		e := l.GetLogEntry().SetColor(l.Color).SetTimestamp().SetLevel(EnvLogLevelInfo).SetMsg(msg).SetNewline().Render()
 		defer l.PutLogEntry(e)
 		_, _ = l.Writer.Write(e.Bytes())
 	}
@@ -250,7 +251,7 @@ func (l *Logger) Infof(format string, v ...interface{}) {
 // Warnln print warn level logs in a line
 func (l *Logger) Warnln(msg string) {
 	if LogLevelWarn >= l.Level {
-		e := l.GetLogEntry().BufClr().SetColor(l.Color).SetTimestamp().SetLevel(EnvLogLevelWarn).SetMsg(msg).SetNewline().Render()
+		e := l.GetLogEntry().SetColor(l.Color).SetTimestamp().SetLevel(EnvLogLevelWarn).SetMsg(msg).SetNewline().Render()
 		defer l.PutLogEntry(e)
 		_, _ = l.Writer.Write(e.Bytes())
 	}
@@ -272,7 +273,7 @@ func (l *Logger) Warnf(format string, v ...interface{}) {
 // Errorln print error level logs in a line
 func (l *Logger) Errorln(msg string) {
 	if LogLevelError >= l.Level {
-		e := l.GetLogEntry().BufClr().SetColor(l.Color).SetTimestamp().SetLevel(EnvLogLevelError).SetMsg(msg).SetNewline().Render()
+		e := l.GetLogEntry().SetColor(l.Color).SetTimestamp().SetLevel(EnvLogLevelError).SetMsg(msg).SetNewline().Render()
 		defer l.PutLogEntry(e)
 		_, _ = l.Writer.Write(e.Bytes())
 	}
@@ -294,7 +295,7 @@ func (l *Logger) Errorf(format string, v ...interface{}) {
 // Fatalln print fatal level logs in a line
 func (l *Logger) Fatalln(msg string) {
 	if LogLevelFatal >= l.Level {
-		e := l.GetLogEntry().BufClr().SetColor(l.Color).SetTimestamp().SetLevel(EnvLogLevelFatal).SetMsg(msg).SetNewline().Render()
+		e := l.GetLogEntry().SetColor(l.Color).SetTimestamp().SetLevel(EnvLogLevelFatal).SetMsg(msg).SetNewline().Render()
 		defer l.PutLogEntry(e)
 		_, _ = l.Writer.Write(e.Bytes())
 		os.Exit(1)
