@@ -16,6 +16,21 @@ package log
 
 import "io"
 
+// Log is one glocal logger which can be used in any packages
+// e.g.
+// 1.
+// var Log = NewLogger(os.Stdout, INFO)
+// 2.
+// var logger = NewLogger(os.Stdout, INFO, CallPath)
+// 3.
+//
+//	var logger = &Logger{
+//		Writer:   os.Stdout,
+//		Level:    INFO,
+//		CallPath: 3,
+//		Color:    true,
+//	}
+
 // NewLogger returns a instance of Logger
 func NewLogger(writer io.Writer, level, caller int) *Logger {
 	return &Logger{
@@ -50,6 +65,44 @@ type LoggerIface interface {
 }
 */
 
+/*
+func SetDefaultLogFile() {
+	SetLogFile(DefaultLogFile)
+}
+
+func SetLogFile(path string) {
+	f, err := os.OpenFile(path, os.O_RDWR|os.O_APPEND, 0666)
+	if err != nil {
+		f, err := os.Create(path)
+		if err != nil {
+			panic(err)
+		} else {
+			file = f
+		}
+	} else {
+		file = f
+	}
+
+	logger.Writer = file
+	println(file.Name())
+}
+*/
+
+// TODO: need refactor
+/*
+func SetSink(s Sink) {
+	logger.Sink = s
+}
+*/
+
+// TODO: need refactor
+/*
+func SetContext(ctx Context) *Entry {
+	return logger.SetContext(ctx)
+}
+*/
+
+/*
 func traceln(v ...any) {
 	logger.traceln(v)
 }
@@ -73,3 +126,4 @@ func errorln(v ...any) {
 func fatalln(v ...any) {
 	logger.fatalln(v)
 }
+*/
