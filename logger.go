@@ -92,6 +92,7 @@ func (l *Logger) SetCallPath(callPath int) {
 	l.CallPath = callPath
 }
 
+/*
 func (l *Logger) doPrint(format string, v ...interface{}) {
 	e := l.NewLogEntry()
 	defer l.PutLogEntry(e)
@@ -138,6 +139,7 @@ func (l *Logger) doPrintln0(v ...any) {
 
 	_, _ = l.Writer.Write(e.buf)
 }
+*/
 
 func (l *Logger) NewLogEntry() *LogEntry {
 	return l.epool.Get().(*LogEntry)
@@ -152,27 +154,20 @@ func (l *Logger) PutLogEntry(e *LogEntry) {
 	l.epool.Put(e)
 }
 
-func (l *Logger) println(msg string) {
-	if l.Async {
-		go l.doPrintln(msg)
-	} else {
-		l.doPrintln(msg)
-	}
-}
+func (l *Logger) _printf(levelGate int, format string, v ...interface{}) {
+	msg := formattedMessage(format, v...)
+	e := l.GetLogEntry().SetMsg(msg)
+	defer l.PutLogEntry(e)
 
-func (l *Logger) println0(v ...any) {
-	if l.Async {
-		go l.doPrintln0(v)
-	} else {
-		l.doPrintln0(v)
+	if levelGate >= l.Level {
+		e.SetLevel(LogLevelMap[levelGate])
 	}
-}
 
-func (l *Logger) printf(format string, v ...interface{}) {
-	if l.Async {
-		go l.doPrint(format, v...)
-	} else {
-		l.doPrint(format, v...)
+	l.formatter.Render(e)
+	_, _ = l.Writer.Write(e.Bytes())
+
+	if levelGate == LogLevelFatal {
+		os.Exit(1)
 	}
 }
 
@@ -192,112 +187,50 @@ func (l *Logger) _println(levelGate int, msg string) {
 	}
 }
 
-// Traceln print trace level logs in a line
 func (l *Logger) Traceln(msg string) {
 	l._println(LogLevelTrace, msg)
 }
 
-func (l *Logger) traceln(v ...any) {
-	if LogLevelTrace >= l.Level {
-		l.println0(v)
-	}
-}
-
-// Tracef print trace level logs in a specific format
-func (l *Logger) Tracef(format string, v ...interface{}) {
-	if LogLevelTrace >= l.Level {
-		l.printf(format, v...)
-	}
-}
-
-// Debugln print debug level logs in a line
 func (l *Logger) Debugln(msg string) {
 	l._println(LogLevelDebug, msg)
 }
 
-func (l *Logger) debugln(v ...any) {
-	if LogLevelDebug >= l.Level {
-		l.println0(v)
-	}
-}
-
-// Debugf print debug level logs in a specific format
-func (l *Logger) Debugf(format string, v ...interface{}) {
-	if LogLevelDebug >= l.Level {
-		l.printf(format, v...)
-	}
-}
-
-// Infoln print info level logs in a line
 func (l *Logger) Infoln(msg string) {
 	l._println(LogLevelInfo, msg)
 }
 
-func (l *Logger) infoln(v ...any) {
-	if LogLevelInfo >= l.Level {
-		l.println0(v)
-	}
-}
-
-// Infof print info level logs in a specific format
-func (l *Logger) Infof(format string, v ...interface{}) {
-	if LogLevelInfo >= l.Level {
-		l.printf(format, v...)
-	}
-}
-
-// Warnln print warn level logs in a line
 func (l *Logger) Warnln(msg string) {
 	l._println(LogLevelWarn, msg)
 }
 
-func (l *Logger) warnln(v ...any) {
-	if LogLevelWarn >= l.Level {
-		l.println0(v)
-	}
-}
-
-// Warnf print warn level logs in a specific format
-func (l *Logger) Warnf(format string, v ...interface{}) {
-	if LogLevelWarn >= l.Level {
-		l.printf(format, v...)
-	}
-}
-
-// Errorln print error level logs in a line
 func (l *Logger) Errorln(msg string) {
 	l._println(LogLevelError, msg)
 }
 
-func (l *Logger) errorln(v ...any) {
-	if LogLevelError >= l.Level {
-		l.println0(v)
-	}
-}
-
-// Errorf print error level logs in a specific format
-func (l *Logger) Errorf(format string, v ...interface{}) {
-	if LogLevelError >= l.Level {
-		l.printf(format, v...)
-	}
-}
-
-// Fatalln print fatal level logs in a line
 func (l *Logger) Fatalln(msg string) {
 	l._println(LogLevelFatal, msg)
 }
 
-func (l *Logger) fatalln(v ...any) {
-	if LogLevelFatal >= l.Level {
-		l.println0(v)
-		os.Exit(1)
-	}
+func (l *Logger) Tracef(format string, v ...interface{}) {
+	l._printf(LogLevelTrace, format, v...)
 }
 
-// Fatalf print fatal level logs in a specific format
+func (l *Logger) Debugf(format string, v ...interface{}) {
+	l._printf(LogLevelDebug, format, v...)
+}
+
+func (l *Logger) Infof(format string, v ...interface{}) {
+	l._printf(LogLevelInfo, format, v...)
+}
+
+func (l *Logger) Warnf(format string, v ...interface{}) {
+	l._printf(LogLevelWarn, format, v...)
+}
+
+func (l *Logger) Errorf(format string, v ...interface{}) {
+	l._printf(LogLevelError, format, v...)
+}
+
 func (l *Logger) Fatalf(format string, v ...interface{}) {
-	if LogLevelFatal >= l.Level {
-		l.printf(format, v...)
-		os.Exit(1)
-	}
+	l._printf(LogLevelFatal, format, v...)
 }
