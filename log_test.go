@@ -28,6 +28,10 @@ func Test_FastLogger(t *testing.T) {
 	Debugln("this should be blue")
 	Infoln("this should be non-colored")
 	Errorln("this should be red")
+
+	Debugf("%#v, %s\n", []int{1, 2, 3}, "this should be blue")
+	Infof("%#v, %s\n", []int{1, 2, 3}, "this should be non-colored")
+	Errorf("%#v, %s\n", []int{1, 2, 3}, "this should be red")
 }
 
 func Test_GeneralLogger(t *testing.T) {
