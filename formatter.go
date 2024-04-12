@@ -20,8 +20,8 @@ package log
 // * JSONFormatter, print as "{"application": "foo", "cluster": "production", "msg": "deployment not found"}"
 type Formatter interface {
 	// Print(ctx Context, fields *Fields) string
-	// SetColor(color bool)
 
+	SetColor(color bool)
 	Render(e *LogEntry)
 }
 
@@ -55,6 +55,10 @@ type TextFormatter struct {
 	Color           bool
 	TimestampFormat string
 	DynamicLevel    bool
+}
+
+func (t *TextFormatter) SetColor(color bool) {
+	t.Color = color
 }
 
 func (t *TextFormatter) Render(e *LogEntry) {

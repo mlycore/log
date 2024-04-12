@@ -37,7 +37,6 @@ type Logger struct {
 
 	CallPath int
 	Async    bool
-	Color    bool
 }
 
 func (l *Logger) SetWriter(w io.Writer) *Logger {
@@ -46,7 +45,7 @@ func (l *Logger) SetWriter(w io.Writer) *Logger {
 }
 
 func (l *Logger) SetColor(enabled bool) *Logger {
-	l.Color = enabled
+	l.formatter.SetColor(enabled)
 	return l
 }
 
@@ -90,59 +89,6 @@ func (l *Logger) SetLevelByName(level string) {
 // SetCallPath set caller path
 func (l *Logger) SetCallPath(callPath int) {
 	l.CallPath = callPath
-}
-
-/*
-func (l *Logger) doPrint(format string, v ...interface{}) {
-	e := l.NewLogEntry()
-	defer l.PutLogEntry(e)
-	e.reset()
-
-	e.SetDefaultTimestamp()
-	e.SetLevel(l.LevelStr)
-	msg := formattedMessage(format, v...)
-	e.SetMsg(msg)
-
-	_, _ = l.Writer.Write(e.buf)
-}
-
-func (l *Logger) doPrintln(msg string) {
-	// TODO: make functions meta a optional argument
-	// fields.File, fields.Func, fields.Line = getFuncInfo(l.CallPath)
-
-	e := l.NewLogEntry()
-	defer l.PutLogEntry(e)
-	e.reset()
-
-	// e.SetColor(l.Color, 0)
-	e.SetDefaultTimestamp()
-	e.SetLevel(l.LevelStr)
-	e.SetMsg(msg)
-	// e.SetColor(l.Color, 1)
-
-	e.buf = append(e.buf, '\n')
-
-	_, _ = l.Writer.Write(e.buf)
-}
-
-func (l *Logger) doPrintln0(v ...any) {
-	// TODO: make functions meta a optional argument
-	// fields.File, fields.Func, fields.Line = getFuncInfo(l.CallPath)
-
-	e := l.NewLogEntry()
-	defer l.PutLogEntry(e)
-	e.reset()
-
-	e.SetDefaultTimestamp()
-	e.SetLevel(l.LevelStr)
-	e.SetArgs(v)
-
-	_, _ = l.Writer.Write(e.buf)
-}
-*/
-
-func (l *Logger) NewLogEntry() *LogEntry {
-	return l.epool.Get().(*LogEntry)
 }
 
 func (l *Logger) GetLogEntry() *LogEntry {
