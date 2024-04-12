@@ -14,62 +14,50 @@
 
 package log
 
-// Traceln print trace level logs in a line
 func Traceln(msg string) {
 	fastlogger.Traceln(msg)
 }
 
-// Tracef print trace level logs in a specific format
 func Tracef(format string, v ...interface{}) {
 	fastlogger.Tracef(format, v...)
 }
 
-// Debugln print debug level logs in a line
 func Debugln(msg string) {
 	fastlogger.Debugln(msg)
 }
 
-// Debugf print debug level logs in a specific format
 func Debugf(format string, v ...interface{}) {
 	fastlogger.Debugf(format, v...)
 }
 
-// Infoln print info level logs in a line
 func Infoln(msg string) {
 	fastlogger.Infoln(msg)
 }
 
-// Infof print info level logs in a specific format
 func Infof(format string, v ...interface{}) {
 	fastlogger.Infof(format, v...)
 }
 
-// Warnln print warn level logs in a line
 func Warnln(msg string) {
 	fastlogger.Warnln(msg)
 }
 
-// Warnf print warn level logs in a specific format
 func Warnf(format string, v ...interface{}) {
 	fastlogger.Warnf(format, v...)
 }
 
-// Errorln print error level logs in a line
 func Errorln(msg string) {
 	fastlogger.Errorln(msg)
 }
 
-// Errorf print error level logs in a specific format
 func Errorf(format string, v ...interface{}) {
 	fastlogger.Errorf(format, v...)
 }
 
-// Fatalln print fatal level logs in a line
 func Fatalln(msg string) {
 	fastlogger.Fatalln(msg)
 }
 
-// Fatalf print fatal level logs in a specific format
 func Fatalf(format string, v ...interface{}) {
 	fastlogger.Fatalf(format, v...)
 }

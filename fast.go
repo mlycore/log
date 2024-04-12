@@ -22,23 +22,23 @@ func init() {
 
 var fastlogger *Logger
 
-// NewDefaultLogger returns a instance of Logger with default configurations
-func NewDefaultLogger() {
+// NewDefaultLogger returns a global instance of Logger with default configurations
+func NewDefaultLogger() *Logger {
 	fastlogger = NewLogger(os.Stdout, LogLevelDefault, CallPathDefault)
+	fastlogger.SetFormatter(&TextFormatter{
+		Color: false,
+	})
+	return fastlogger
 }
 
-// TODO: need refactor
 func SetFormatter(f Formatter) {
-	// logger.SetFormatter(f)
-	//f.SetColor()
+	fastlogger.SetFormatter(f)
 }
 
-// SetLevel set log level by name
 func SetLevel(lv string) {
 	fastlogger.SetLevelByName(lv)
 }
 
-// SetColor set log color
 func SetColor(enabled bool) {
 	fastlogger.SetColor(enabled)
 }

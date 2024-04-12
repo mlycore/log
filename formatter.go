@@ -16,11 +16,13 @@ package log
 
 // Formatter will decide how logs are printed
 // Default consist of:
-// * TextFormatter, print as "deployment=kubestar namespace=default msg=deployment not found"
-// * JSONFormatter, print as "{"deployment": "kubestar", "namespace": "default", "msg": "deployment not found"}"
+// * TextFormatter, print as "application=foo cluster=production msg=deployment not found"
+// * JSONFormatter, print as "{"application": "foo", "cluster": "production", "msg": "deployment not found"}"
 type Formatter interface {
-	Print(ctx Context, fields *Fields) string
-	SetColor(color bool)
+	// Print(ctx Context, fields *Fields) string
+	// SetColor(color bool)
+
+	Render(e *LogEntry)
 }
 
 /*
@@ -47,15 +49,31 @@ func (t *JSONFormatter) Print(ctx Context, fields *Fields) string {
 
 	return string(data)
 }
+*/
 
 type TextFormatter struct {
-	Color bool
+	Color           bool
+	TimestampFormat string
+	DynamicLevel    bool
 }
 
-func (t *TextFormatter) SetColor(color bool) {
-	t.Color = color
+func (t *TextFormatter) Render(e *LogEntry) {
+	e.SetColor(t.Color)
+
+	if len(t.TimestampFormat) == 0 {
+		e.SetDefaultTimestamp()
+	} else {
+		e.SetTimestamp(t.TimestampFormat)
+	}
+
+	if t.DynamicLevel {
+		// TODO: add signal SIGUSR handling
+		todo()
+	}
+	e.SetNewline().Render()
 }
 
+/*
 func (t *TextFormatter) Print(ctx Context, fields *Fields) string {
 	if ctx == nil {
 		ctx = make(map[string]any)

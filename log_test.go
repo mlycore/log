@@ -22,10 +22,11 @@ import (
 )
 
 func Test_FastLogger(t *testing.T) {
-	fastlogger.SetLevel(LogLevelDebug)
+	fastlogger.SetLevel(LogLevelTrace)
 	fastlogger.SetColor(true)
-	Infoln("this should be non-colored")
+
 	Debugln("this should be blue")
+	Infoln("this should be non-colored")
 	Errorln("this should be red")
 }
 
