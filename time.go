@@ -28,13 +28,18 @@ const (
 )
 
 func (e *LogEntry) SetTimestamp(format string) *LogEntry {
-	e.timestamp = []byte(time.Now().Format(format))
+	if len(format) != 0 {
+		e.timestamp = []byte(time.Now().Format(format))
+	} else {
+		e.fastTimestamp()
+	}
+
 	return e
 }
 
-// SetDefaultTimestamp will get timestamp without location
-func (e *LogEntry) SetDefaultTimestamp() *LogEntry {
+func (e *LogEntry) fastTimestamp() *LogEntry {
 	// TODO: make timestamp configurable
+	// NOTE: this fast timestamp will be generated without location
 	// change time format from 2024-03-08T16:30:00Z to 2024-03-08 16:30:00
 	var tmp [20]byte
 
