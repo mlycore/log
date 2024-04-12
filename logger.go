@@ -172,7 +172,7 @@ func (l *Logger) _printf(levelGate int, format string, v ...interface{}) {
 }
 
 func (l *Logger) _println(levelGate int, msg string) {
-	e := l.GetLogEntry().SetMsg(msg)
+	e := l.GetLogEntry().SetMsg(msg).SetNewline()
 	defer l.PutLogEntry(e)
 
 	if levelGate >= l.Level {
