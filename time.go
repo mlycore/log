@@ -24,11 +24,13 @@ const (
 	sepColon = ':'
 	sepT     = 'T'
 	sepZ     = 'Z'
+	sepSpace = ' '
 )
 
 // get timestamp without location
 func (e *LogEntry) SetTimestamp() *LogEntry {
-	// 2024-03-08T16:30:00Z
+	// TODO: make timestamp configurable
+	// change time format from 2024-03-08T16:30:00Z to 2024-03-08 16:30:00
 	var tmp [20]byte
 
 	totalsec, _, _ := now()
@@ -63,7 +65,7 @@ func (e *LogEntry) SetTimestamp() *LogEntry {
 	tmp[9] = itoa[d+1]
 
 	// seperator
-	tmp[10] = sepT
+	tmp[10] = sepSpace
 
 	// hour location tmp[11:12]
 	h := hour % 100 * 2
@@ -87,7 +89,6 @@ func (e *LogEntry) SetTimestamp() *LogEntry {
 	tmp[18] = itoa[s+1]
 
 	// end
-	tmp[19] = sepZ
 
 	stmp := tmp[:20]
 	e.timestamp = append(e.timestamp, stmp...)
