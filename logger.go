@@ -25,9 +25,9 @@ import (
 type Logger struct {
 	Writer io.Writer
 
-	mu        sync.Mutex
-	formatter Formatter
-	epool     sync.Pool
+	mu sync.Mutex
+	// formatter Formatter
+	epool sync.Pool
 
 	Level int
 	// TODO: remove this later
@@ -43,10 +43,12 @@ func (l *Logger) SetColor(enabled bool) *Logger {
 	return l
 }
 
+/*
 func (l *Logger) SetFormatter(f Formatter) *Logger {
 	l.formatter = f
 	return l
 }
+*/
 
 func (l *Logger) EnableAsync() *Logger {
 	l.Async = true

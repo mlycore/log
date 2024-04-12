@@ -18,29 +18,8 @@ import "os"
 
 func init() {
 	NewDefaultLogger()
-	/*
-		SetFormatter(&TextFormatter{Color: false})
-		SetLevel(EnvLogLevelInfo)
-	*/
-	// SetSink(&StdioSink{})
-
-	//go logger.flushDaemon()
 }
 
-// Log is one glocal logger which can be used in any packages
-// e.g.
-// 1.
-// var Log = NewLogger(os.Stdout, INFO)
-// 2.
-// var logger = NewLogger(os.Stdout, INFO, CallPath)
-// 3.
-//
-//	var logger = &Logger{
-//		Writer:   os.Stdout,
-//		Level:    INFO,
-//		CallPath: 3,
-//		Color:    true,
-//	}
 var fastlogger *Logger
 
 // NewDefaultLogger returns a instance of Logger with default configurations
@@ -48,52 +27,18 @@ func NewDefaultLogger() {
 	fastlogger = NewLogger(os.Stdout, LogLevelDefault, CallPathDefault)
 }
 
-/*
-func SetDefaultLogFile() {
-	SetLogFile(DefaultLogFile)
-}
-
-func SetLogFile(path string) {
-	f, err := os.OpenFile(path, os.O_RDWR|os.O_APPEND, 0666)
-	if err != nil {
-		f, err := os.Create(path)
-		if err != nil {
-			panic(err)
-		} else {
-			file = f
-		}
-	} else {
-		file = f
-	}
-
-	logger.Writer = file
-	println(file.Name())
-}
-*/
-
 // TODO: need refactor
-/*
 func SetFormatter(f Formatter) {
-	logger.SetFormatter(f)
+	// logger.SetFormatter(f)
 	//f.SetColor()
 }
-*/
-
-// TODO: need refactor
-/*
-func SetContext(ctx Context) *Entry {
-	return logger.SetContext(ctx)
-}
-*/
 
 // SetLevel set log level by name
 func SetLevel(lv string) {
-	logger.SetLevelByName(lv)
+	fastlogger.SetLevelByName(lv)
 }
 
-// TODO: need refactor
-/*
-func SetSink(s Sink) {
-	logger.Sink = s
+// SetColor set log color
+func SetColor(enabled bool) {
+	fastlogger.SetColor(enabled)
 }
-*/

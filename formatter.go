@@ -14,11 +14,6 @@
 
 package log
 
-import (
-	"encoding/json"
-	"fmt"
-)
-
 // Formatter will decide how logs are printed
 // Default consist of:
 // * TextFormatter, print as "deployment=kubestar namespace=default msg=deployment not found"
@@ -28,6 +23,7 @@ type Formatter interface {
 	SetColor(color bool)
 }
 
+/*
 type JSONFormatter struct {
 	Color bool
 }
@@ -38,7 +34,7 @@ func (t *JSONFormatter) SetColor(color bool) {
 
 func (t *JSONFormatter) Print(ctx Context, fields *Fields) string {
 	if ctx == nil {
-		ctx = make(map[string]string)
+		ctx = make(map[string]any)
 	}
 
 	ctx["msg"] = fields.Msg
@@ -62,7 +58,7 @@ func (t *TextFormatter) SetColor(color bool) {
 
 func (t *TextFormatter) Print(ctx Context, fields *Fields) string {
 	if ctx == nil {
-		ctx = make(map[string]string)
+		ctx = make(map[string]any)
 	}
 	ctx["msg"] = fields.Msg
 	var context string
@@ -87,3 +83,4 @@ func (t *TextFormatter) Print(ctx Context, fields *Fields) string {
 
 	return msg
 }
+*/

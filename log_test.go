@@ -21,102 +21,69 @@ import (
 	"testing"
 )
 
-func Test_Log0(t *testing.T) {
-	tl := NewLogger(os.Stdout, LogLevelInfo, 0)
-	tl.SetColor(true)
-
-	logger = tl
-	logger.SetLevelByName("DEBUG")
-	logger.Infoln("this should be non-colored")
-	logger.Debugln("this should be blue")
-	logger.Errorln("this should be red")
+func Test_FastLogger(t *testing.T) {
+	fastlogger.SetLevel(LogLevelDebug)
+	fastlogger.SetColor(true)
+	Infoln("this should be non-colored")
+	Debugln("this should be blue")
+	Errorln("this should be red")
 }
 
-func Test_Log(t *testing.T) {
-	tl := NewLogger(os.Stdout, LogLevelInfo, 0)
-	tl.SetColor(true)
-
-	// set global variable logger
-	logger = tl
+func Test_GeneralLogger(t *testing.T) {
+	logger := NewLogger(os.Stdout, LogLevelInfo, 0)
+	logger.SetColor(true)
 
 	logger.SetLevelByName("TRACE")
-	printall(logger.Level)
+	printall(logger, logger.Level)
 
 	logger.SetLevelByName("DEBUG")
-	printall(logger.Level)
+	printall(logger, logger.Level)
 
 	logger.SetLevelByName("INFO")
-	printall(logger.Level)
+	printall(logger, logger.Level)
 
 	logger.SetLevelByName("WARN")
-	printall(logger.Level)
+	printall(logger, logger.Level)
 
 	logger.SetLevelByName("ERROR")
-	printall(logger.Level)
+	printall(logger, logger.Level)
 
 	// logger.SetLevelByName("FATAL")
-	// printall(logger.Level)
+	// printall(logger, logger.Level)
 }
 
-func printall(level int) {
-	l := LogLevelMap[level]
-	str := fmt.Sprintf("current level is %s", l)
-	Traceln("traceln: " + str)
-	Tracef("tracef: %s\n", str)
+func printall(l *Logger, level int) {
+	lv := LogLevelMap[level]
+	str := fmt.Sprintf("current level is %s", lv)
 
-	Debugln("debugln: " + str)
-	Debugf("debugf: %s\n", str)
+	l.Traceln("traceln: " + str)
+	l.Tracef("tracef: %s\n", str)
 
-	Infoln("infoln: " + str)
-	Infof("infof: %s\n", str)
+	l.Debugln("debugln: " + str)
+	l.Debugf("debugf: %s\n", str)
 
-	Warnln("warnln: " + str)
-	Warnf("warnf: %s\n", str)
+	l.Infoln("infoln: " + str)
+	l.Infof("infof: %s\n", str)
 
-	Errorln("errorln: " + str)
-	Errorf("errorf: %s\n", str)
+	l.Warnln("warnln: " + str)
+	l.Warnf("warnf: %s\n", str)
 
-	//Fatalln("fatalln: " + str)
-	//Fatalf("fatalf: %s", str)
+	l.Errorln("errorln: " + str)
+	l.Errorf("errorf: %s\n", str)
+
+	//l.Fatalln("fatalln: " + str)
+	//l.Fatalf("fatalf: %s", str)
 }
 
 func Test_FuncInfo(t *testing.T) {
-	Traceln("this is traceln")
+	fastlogger.SetLevel(LogLevelInfo)
 	data := make([]byte, 10240)
 	runtime.Stack(data, true)
-	fmt.Printf("%s\n", string(data))
+	Infof("%s\n", string(data))
 }
 
 func Test_GetShortFileName(t *testing.T) {
 	name := "github.com/mlycore/log/logger.(*Logger).Infof"
 	logger := NewLogger(os.Stdout, LogLevelInfo, 3)
 	logger.Infoln(getShortFileName(name))
-}
-
-func Test_FormatterLogger(t *testing.T) {
-	NewDefaultLogger()
-	// SetFormatter(&JSONFormatter{})
-	// SetFormatter(&TextFormatter{})
-	/*
-		SetContext(Context{
-			"namespace": "default",
-			"deployment": "kubestar",
-		})
-	*/
-
-	Infoln("deployment create success")
-	Errorf("service create error")
-
-	/*
-		SetContext(Context{
-			"namespace":  "starpay",
-			"deployment": "uuid",
-		})
-	*/
-	Infoln("deployment list success")
-}
-
-func Test_DefaultLogger(t *testing.T) {
-	NewDefaultLogger()
-	Infoln("this is a log message")
 }
