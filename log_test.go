@@ -33,8 +33,6 @@ func Test_Log0(t *testing.T) {
 }
 
 func Test_Log(t *testing.T) {
-	// NewDefaultLogger()
-	// SetFormatter(&TextFormatter{Color: false})
 	tl := NewLogger(os.Stdout, LogLevelInfo, 0)
 	tl.SetColor(true)
 
@@ -90,11 +88,9 @@ func Test_FuncInfo(t *testing.T) {
 }
 
 func Test_GetShortFileName(t *testing.T) {
-	name := "github.com/xuyun-io/kubestar/pkg/controllers/crd/application.(*ApplicationController).List"
-	NewLogger(os.Stdout, 0, 3)
-	SetLevel("ERROR")
-	Errorf("%s", getShortFileName(name))
-	// t.Logf("%s\n", getShortFileName(name))
+	name := "github.com/mlycore/log/logger.(*Logger).Infof"
+	logger := NewLogger(os.Stdout, LogLevelInfo, 3)
+	logger.Infoln(getShortFileName(name))
 }
 
 func Test_FormatterLogger(t *testing.T) {
@@ -122,24 +118,5 @@ func Test_FormatterLogger(t *testing.T) {
 
 func Test_DefaultLogger(t *testing.T) {
 	NewDefaultLogger()
-	// SetFormatter(&TextFormatter{})
-	logger.SetLevelByName("InFo")
-	//printall(logger.Level)
-	// logger.Infoln("a", "b")
-}
-
-func Benchmark_Infof(b *testing.B) {
-	NewDefaultLogger()
-	// SetFormatter(&TextFormatter{})
-	logger.SetLevelByName("TRACE")
-
-	for i := 0; i < b.N; i++ {
-		logger.Infof("key %s", "value")
-	}
-}
-
-func Test_LogFile(t *testing.T) {
-	NewDefaultLogger()
-	SetLogFile("./test.log")
-	// logger.Infoln("a", "b")
+	Infoln("this is a log message")
 }
