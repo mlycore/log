@@ -99,7 +99,7 @@ func Test_GetShortFileName(t *testing.T) {
 
 func Test_FormatterLogger(t *testing.T) {
 	NewDefaultLogger()
-	SetFormatter(&JSONFormatter{})
+	// SetFormatter(&JSONFormatter{})
 	// SetFormatter(&TextFormatter{})
 	/*
 		SetContext(Context{
@@ -122,7 +122,7 @@ func Test_FormatterLogger(t *testing.T) {
 
 func Test_DefaultLogger(t *testing.T) {
 	NewDefaultLogger()
-	SetFormatter(&TextFormatter{})
+	// SetFormatter(&TextFormatter{})
 	logger.SetLevelByName("InFo")
 	//printall(logger.Level)
 	// logger.Infoln("a", "b")
@@ -130,7 +130,7 @@ func Test_DefaultLogger(t *testing.T) {
 
 func Benchmark_Infof(b *testing.B) {
 	NewDefaultLogger()
-	SetFormatter(&TextFormatter{})
+	// SetFormatter(&TextFormatter{})
 	logger.SetLevelByName("TRACE")
 
 	for i := 0; i < b.N; i++ {

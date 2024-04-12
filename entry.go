@@ -70,8 +70,36 @@ func (e *LogEntry) render() *LogEntry {
 	e.buf = append(e.buf, " ["...)
 	e.buf = append(e.buf, e.level...)
 	e.buf = append(e.buf, "] "...)
+
+	// TODO: add a switch for context
+	e.renderCtx()
+
+	e.buf = append(e.buf, "msg"...)
+	e.buf = append(e.buf, '=')
 	e.buf = append(e.buf, e.msg...)
 	return e
+}
+
+func (e *LogEntry) renderCtx() {
+	// TODO: need check key msg
+	// NOTE: one alloc
+	// e.context["msg"] = e.msg
+	// e.context["level"] = e.level
+
+	// var (
+	// 	key   string
+	// 	value any
+	// )
+
+	// for key, value = range e.context {
+	// 	e.buf = append(e.buf, key...)
+	// 	e.buf = append(e.buf, ": "...)
+	// 	// TODO: special check for v
+	// 	// e.println(v)
+	// 	e.buf = append(e.buf, value.(string)...)
+	// 	key = key[:0]
+	// 	value = value.(string)[:0]
+	// }
 }
 
 type palette []string
@@ -121,10 +149,14 @@ func (e *LogEntry) reset() *LogEntry {
 	e.newline = false
 	e.timestamp = e.timestamp[:0]
 	e.buf = e.buf[:0]
+	for k, _ := range e.context {
+		delete(e.context, k)
+	}
 	return e
 }
 
-type Context map[string]string
+// NOTE: it will cost allocations if using map[string]any
+type Context map[string]any
 
 func (e *LogEntry) WithContext(ctx Context) *LogEntry {
 	e.context = ctx
