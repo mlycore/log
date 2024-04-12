@@ -62,13 +62,7 @@ func (t *TextFormatter) SetColor(color bool) {
 }
 
 func (t *TextFormatter) Render(e *LogEntry) {
-	e.SetColor(t.Color)
-
-	if len(t.TimestampFormat) == 0 {
-		e.SetDefaultTimestamp()
-	} else {
-		e.SetTimestamp(t.TimestampFormat)
-	}
+	e.SetColor(t.Color).SetTimestamp(t.TimestampFormat)
 
 	if t.DynamicLevel {
 		// TODO: add signal SIGUSR handling
