@@ -176,16 +176,25 @@ func (l *Logger) printf(format string, v ...interface{}) {
 	}
 }
 
+func (l *Logger) _println(levelGate int, msg string) {
+	e := l.GetLogEntry().SetMsg(msg)
+	defer l.PutLogEntry(e)
+
+	if levelGate >= l.Level {
+		e.SetLevel(LogLevelMap[levelGate])
+	}
+
+	l.formatter.Render(e)
+	_, _ = l.Writer.Write(e.Bytes())
+
+	if levelGate == LogLevelFatal {
+		os.Exit(1)
+	}
+}
+
 // Traceln print trace level logs in a line
 func (l *Logger) Traceln(msg string) {
-	if LogLevelTrace >= l.Level {
-		e := l.GetLogEntry().SetMsg(msg).SetLevel(LogLevelMap[LogLevelTrace])
-		defer l.PutLogEntry(e)
-
-		l.formatter.Render(e)
-		_, _ = l.Writer.Write(e.Bytes())
-
-	}
+	l._println(LogLevelTrace, msg)
 }
 
 func (l *Logger) traceln(v ...any) {
@@ -203,13 +212,7 @@ func (l *Logger) Tracef(format string, v ...interface{}) {
 
 // Debugln print debug level logs in a line
 func (l *Logger) Debugln(msg string) {
-	if LogLevelDebug >= l.Level {
-		e := l.GetLogEntry().SetMsg(msg).SetLevel(LogLevelMap[LogLevelDebug])
-		defer l.PutLogEntry(e)
-
-		l.formatter.Render(e)
-		_, _ = l.Writer.Write(e.Bytes())
-	}
+	l._println(LogLevelDebug, msg)
 }
 
 func (l *Logger) debugln(v ...any) {
@@ -227,13 +230,7 @@ func (l *Logger) Debugf(format string, v ...interface{}) {
 
 // Infoln print info level logs in a line
 func (l *Logger) Infoln(msg string) {
-	if LogLevelInfo >= l.Level {
-		e := l.GetLogEntry().SetMsg(msg).SetLevel(LogLevelMap[LogLevelInfo])
-		defer l.PutLogEntry(e)
-
-		l.formatter.Render(e)
-		_, _ = l.Writer.Write(e.Bytes())
-	}
+	l._println(LogLevelInfo, msg)
 }
 
 func (l *Logger) infoln(v ...any) {
@@ -251,13 +248,7 @@ func (l *Logger) Infof(format string, v ...interface{}) {
 
 // Warnln print warn level logs in a line
 func (l *Logger) Warnln(msg string) {
-	if LogLevelWarn >= l.Level {
-		e := l.GetLogEntry().SetMsg(msg).SetLevel(LogLevelMap[LogLevelWarn])
-		defer l.PutLogEntry(e)
-
-		l.formatter.Render(e)
-		_, _ = l.Writer.Write(e.Bytes())
-	}
+	l._println(LogLevelWarn, msg)
 }
 
 func (l *Logger) warnln(v ...any) {
@@ -275,13 +266,7 @@ func (l *Logger) Warnf(format string, v ...interface{}) {
 
 // Errorln print error level logs in a line
 func (l *Logger) Errorln(msg string) {
-	if LogLevelError >= l.Level {
-		e := l.GetLogEntry().SetMsg(msg).SetLevel(LogLevelMap[LogLevelError])
-		defer l.PutLogEntry(e)
-
-		l.formatter.Render(e)
-		_, _ = l.Writer.Write(e.Bytes())
-	}
+	l._println(LogLevelError, msg)
 }
 
 func (l *Logger) errorln(v ...any) {
@@ -299,14 +284,7 @@ func (l *Logger) Errorf(format string, v ...interface{}) {
 
 // Fatalln print fatal level logs in a line
 func (l *Logger) Fatalln(msg string) {
-	if LogLevelFatal >= l.Level {
-		e := l.GetLogEntry().SetMsg(msg).SetLevel(LogLevelMap[LogLevelFatal])
-		defer l.PutLogEntry(e)
-
-		l.formatter.Render(e)
-		_, _ = l.Writer.Write(e.Bytes())
-		os.Exit(1)
-	}
+	l._println(LogLevelFatal, msg)
 }
 
 func (l *Logger) fatalln(v ...any) {
