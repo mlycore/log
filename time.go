@@ -27,8 +27,13 @@ const (
 	sepSpace = ' '
 )
 
-// get timestamp without location
-func (e *LogEntry) SetTimestamp() *LogEntry {
+func (e *LogEntry) SetTimestamp(format string) *LogEntry {
+	e.timestamp = []byte(time.Now().Format(format))
+	return e
+}
+
+// SetDefaultTimestamp will get timestamp without location
+func (e *LogEntry) SetDefaultTimestamp() *LogEntry {
 	// TODO: make timestamp configurable
 	// change time format from 2024-03-08T16:30:00Z to 2024-03-08 16:30:00
 	var tmp [20]byte
