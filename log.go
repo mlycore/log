@@ -21,8 +21,8 @@ import (
 )
 
 func init() {
+	NewDefaultLogger()
 	/*
-		NewDefaultLogger()
 		SetFormatter(&TextFormatter{Color: false})
 		SetLevel(EnvLogLevelInfo)
 	*/
@@ -71,16 +71,17 @@ func NewDefaultLogger() {
 // NewLogger returns a instance of Logger
 func NewLogger(writer io.Writer, level, caller int) *Logger {
 	return &Logger{
-		Writer:    writer,
-		Level:     level,
-		LevelStr:  getLogLevel(level),
-		CallPath:  caller,
-		formatter: &TextFormatter{Color: false},
+		Writer:   writer,
+		Level:    level,
+		LevelStr: getLogLevel(level),
+		CallPath: caller,
+		// formatter: &TextFormatter{Color: false},
 
 		epool: epool,
 	}
 }
 
+/*
 func SetDefaultLogFile() {
 	SetLogFile(DefaultLogFile)
 }
@@ -101,11 +102,15 @@ func SetLogFile(path string) {
 	logger.Writer = file
 	println(file.Name())
 }
+*/
 
+// TODO: need refactor
+/*
 func SetFormatter(f Formatter) {
 	logger.SetFormatter(f)
 	//f.SetColor()
 }
+*/
 
 // TODO: need refactor
 /*
@@ -127,16 +132,7 @@ func SetLevel(lv string) {
 	logger.SetLevelByName(lv)
 }
 
-// SetCallPath set caller path
-func SetCallPath(caller int) {
-	logger.SetCallPath(caller)
-}
-
-// SetWriter set writer
-func SetWriter(w io.Writer) {
-	logger.Writer = w
-}
-
+// TODO: need refactor
 /*
 func SetSink(s Sink) {
 	logger.Sink = s
