@@ -30,6 +30,10 @@ import "io"
 //		CallPath: 3,
 //		Color:    true,
 //	}
+//
+
+// TODO: make functions meta a optional argument
+// fields.File, fields.Func, fields.Line = getFuncInfo(l.CallPath)
 
 // NewLogger returns a instance of Logger
 func NewLogger(writer io.Writer, level, caller int) *Logger {
