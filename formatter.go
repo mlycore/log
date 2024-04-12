@@ -70,7 +70,12 @@ func (t *TextFormatter) Render(e *LogEntry) {
 		// TODO: add signal SIGUSR handling
 		todo()
 	}
-	e.SetNewline().Render()
+
+	if e.newline {
+		e.SetNewline()
+	}
+
+	e.Render()
 }
 
 /*
