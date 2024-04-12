@@ -14,210 +14,62 @@
 
 package log
 
-import (
-	"io"
-	"os"
-	"sync"
-)
-
-func init() {
-	NewDefaultLogger()
-	/*
-		SetFormatter(&TextFormatter{Color: false})
-		SetLevel(EnvLogLevelInfo)
-	*/
-	// SetSink(&StdioSink{})
-
-	//go logger.flushDaemon()
-}
-
-// Log is one glocal logger which can be used in any packages
-// e.g.
-// 1.
-// var Log = NewLogger(os.Stdout, INFO)
-// 2.
-// var logger = NewLogger(os.Stdout, INFO, CallPath)
-// 3.
-//
-//	var logger = &Logger{
-//		Writer:   os.Stdout,
-//		Level:    INFO,
-//		CallPath: 3,
-//		Color:    true,
-//	}
-var logger *Logger
-
-var (
-	once sync.Once
-	file *os.File
-
-	// LogLevelMap is log level ma
-	LogLevelMap = map[int]string{
-		LogLevelUnspecified: "UNSPECIFIED",
-		LogLevelTrace:       "TRACE",
-		LogLevelDebug:       "DEBUG",
-		LogLevelInfo:        "INFO",
-		LogLevelWarn:        "WARN",
-		LogLevelError:       "ERROR",
-		LogLevelFatal:       "FATAL",
-	}
-)
-
-// NewDefaultLogger returns a instance of Logger with default configurations
-func NewDefaultLogger() {
-	logger = NewLogger(os.Stdout, LogLevelDefault, CallPathDefault)
-}
-
-// NewLogger returns a instance of Logger
-func NewLogger(writer io.Writer, level, caller int) *Logger {
-	return &Logger{
-		Writer:   writer,
-		Level:    level,
-		LevelStr: getLogLevel(level),
-		CallPath: caller,
-		// formatter: &TextFormatter{Color: false},
-
-		epool: epool,
-	}
-}
-
-/*
-func SetDefaultLogFile() {
-	SetLogFile(DefaultLogFile)
-}
-
-func SetLogFile(path string) {
-	f, err := os.OpenFile(path, os.O_RDWR|os.O_APPEND, 0666)
-	if err != nil {
-		f, err := os.Create(path)
-		if err != nil {
-			panic(err)
-		} else {
-			file = f
-		}
-	} else {
-		file = f
-	}
-
-	logger.Writer = file
-	println(file.Name())
-}
-*/
-
-// TODO: need refactor
-/*
-func SetFormatter(f Formatter) {
-	logger.SetFormatter(f)
-	//f.SetColor()
-}
-*/
-
-// TODO: need refactor
-/*
-func SetContext(ctx Context) *Entry {
-	return logger.SetContext(ctx)
-}
-*/
-
-// LoggerIface defines a general behavior of this logger
-/*
-type LoggerIface interface {
-	Log(level int, v ...interface{})
-	Logf(level int, formater string, v ...interface{})
-}
-*/
-
-// SetLevel set log level by name
-func SetLevel(lv string) {
-	logger.SetLevelByName(lv)
-}
-
-// TODO: need refactor
-/*
-func SetSink(s Sink) {
-	logger.Sink = s
-}
-*/
-
 // Traceln print trace level logs in a line
 func Traceln(msg string) {
-	logger.Traceln(msg)
-}
-
-func traceln(v ...any) {
-	logger.traceln(v)
+	fastlogger.Traceln(msg)
 }
 
 // Tracef print trace level logs in a specific format
 func Tracef(format string, v ...interface{}) {
-	logger.Tracef(format, v...)
+	fastlogger.Tracef(format, v...)
 }
 
 // Debugln print debug level logs in a line
 func Debugln(msg string) {
-	logger.Debugln(msg)
-}
-func debugln(v ...any) {
-	logger.debugln(v)
+	fastlogger.Debugln(msg)
 }
 
 // Debugf print debug level logs in a specific format
 func Debugf(format string, v ...interface{}) {
-	logger.Debugf(format, v...)
+	fastlogger.Debugf(format, v...)
 }
 
 // Infoln print info level logs in a line
 func Infoln(msg string) {
-	logger.Infoln(msg)
-}
-
-func infoln(v ...any) {
-	logger.infoln(v)
+	fastlogger.Infoln(msg)
 }
 
 // Infof print info level logs in a specific format
 func Infof(format string, v ...interface{}) {
-	logger.Infof(format, v...)
+	fastlogger.Infof(format, v...)
 }
 
 // Warnln print warn level logs in a line
 func Warnln(msg string) {
-	logger.Warnln(msg)
-}
-
-func warnln(v ...any) {
-	logger.warnln(v)
+	fastlogger.Warnln(msg)
 }
 
 // Warnf print warn level logs in a specific format
 func Warnf(format string, v ...interface{}) {
-	logger.Warnf(format, v...)
+	fastlogger.Warnf(format, v...)
 }
 
 // Errorln print error level logs in a line
 func Errorln(msg string) {
-	logger.Errorln(msg)
-}
-
-func errorln(v ...any) {
-	logger.errorln(v)
+	fastlogger.Errorln(msg)
 }
 
 // Errorf print error level logs in a specific format
 func Errorf(format string, v ...interface{}) {
-	logger.Errorf(format, v...)
+	fastlogger.Errorf(format, v...)
 }
 
 // Fatalln print fatal level logs in a line
 func Fatalln(msg string) {
-	logger.Fatalln(msg)
-}
-
-func fatalln(v ...any) {
-	logger.fatalln(v)
+	fastlogger.Fatalln(msg)
 }
 
 // Fatalf print fatal level logs in a specific format
 func Fatalf(format string, v ...interface{}) {
-	logger.Fatalf(format, v...)
+	fastlogger.Fatalf(format, v...)
 }
